@@ -69,6 +69,7 @@ export default class CramAdapter extends BaseFeatureDataAdapter {
     }
 
     const seqConf = this.getConf('sequenceAdapter')
+    console.log({ seqConf })
     const subadapter = await this.getSubAdapter(seqConf)
 
     return {
