@@ -1,14 +1,13 @@
-import { types, getParent, cast, SnapshotIn, Instance } from 'mobx-state-tree'
+import { types, getParent, Instance } from 'mobx-state-tree'
 import { BaseViewModel } from '@jbrowse/core/pluggableElementTypes/models'
 import { getSession } from '@jbrowse/core/util'
 
 // icons
 import FolderOpenIcon from '@mui/icons-material/FolderOpen'
 
-import spreadsheetModelFactory, { SpreadsheetModel } from './Spreadsheet'
+import spreadsheetModelFactory, { SpreadsheetData } from './Spreadsheet'
 import importWizardFactory from './ImportWizard'
 
-const minHeight = 40
 const defaultHeight = 440
 
 /**
@@ -35,14 +34,7 @@ function stateModelFactory() {
         /**
          * #property
          */
-        height: types.optional(
-          types.refinement(
-            'SpreadsheetViewHeight',
-            types.number,
-            n => n >= minHeight,
-          ),
-          defaultHeight,
-        ),
+        height: types.optional(types.number, defaultHeight),
         /**
          * #property
          */
@@ -69,8 +61,7 @@ function stateModelFactory() {
        */
       get assembly() {
         const name = self.spreadsheet?.assemblyName
-        const { assemblyManager } = getSession(self)
-        return name ? assemblyManager.get(name) : undefined
+        return name ? getSession(self).assemblyManager.get(name) : undefined
       },
     }))
     .actions(self => ({
@@ -85,7 +76,7 @@ function stateModelFactory() {
        * #action
        */
       setHeight(newHeight: number) {
-        self.height = newHeight > minHeight ? newHeight : minHeight
+        self.height = newHeight
         return self.height
       },
       /**
@@ -109,7 +100,7 @@ function stateModelFactory() {
        * #action
        * load a new spreadsheet and set our mode to display it
        */
-      displaySpreadsheet(spreadsheet?: unknown) {
+      displaySpreadsheet(spreadsheet?: SpreadsheetData) {
         self.spreadsheet.setData(spreadsheet)
       },
 

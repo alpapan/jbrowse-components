@@ -1,6 +1,6 @@
 import { getSession } from '@jbrowse/core/util'
 import { autorun } from 'mobx'
-import { addDisposer, types, getParent, Instance } from 'mobx-state-tree'
+import { addDisposer, types, Instance } from 'mobx-state-tree'
 
 /**
  * #stateModel SpreadsheetViewSpreadsheet
@@ -8,7 +8,7 @@ import { addDisposer, types, getParent, Instance } from 'mobx-state-tree'
  */
 function x() {} // eslint-disable-line @typescript-eslint/no-unused-vars
 
-interface SpreadsheetData {
+export interface SpreadsheetData {
   rows: Record<string, unknown>[]
   columns: string[]
 }
