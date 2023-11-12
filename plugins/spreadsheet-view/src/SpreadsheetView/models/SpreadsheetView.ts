@@ -100,8 +100,8 @@ function stateModelFactory() {
        * #action
        * load a new spreadsheet and set our mode to display it
        */
-      displaySpreadsheet(spreadsheet?: SpreadsheetData) {
-        self.spreadsheet.setData(spreadsheet)
+      displaySpreadsheet(spreadsheet?: SpreadsheetData, assemblyName?: string) {
+        self.spreadsheet.setData(spreadsheet, assemblyName)
       },
 
       /**
@@ -120,7 +120,7 @@ function stateModelFactory() {
         return [
           {
             label: 'Return to import form',
-            onClick: () => self.displaySpreadsheet(undefined),
+            onClick: () => self.displaySpreadsheet(),
             icon: FolderOpenIcon,
           },
         ]

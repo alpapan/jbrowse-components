@@ -1,5 +1,6 @@
 import VCF from '@gmod/vcf'
 import { bufferToString, ParseOptions } from './ImportUtils'
+import { assembleLocString } from '@jbrowse/core/util'
 
 export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
   const { selectedAssemblyName } = options
@@ -8,18 +9,39 @@ export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
   const lines = body.split(/\n|\r\n/)
 
   const keys = new Set<string>()
-  const rows = lines.map(l => {
-    const [CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT] = l.split('\t')
-    const ret = Object.fromEntries(
-      INFO?.split(';').map(e => {
-        const [key, val = true] = e.split('=')
-        const k = `INFO.${key}`
-        keys.add(k)
-        return [k, val]
-      }) || [],
-    )
-    return { CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT, ...ret }
-  })
+  const rows = lines
+    .filter(f => !!f)
+    .map(l => {
+      const [CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT] =
+        l.split('\t')
+      const ret = Object.fromEntries(
+        INFO?.split(';').map(e => {
+          const [key, val = true] = e.split('=')
+          const k = `INFO.${key}`
+          keys.add(k)
+          return [k, val]
+        }) || [],
+      )
+      const start = +POS
+      const s1 = start + 1
+      return {
+        loc: assembleLocString({
+          refName: CHROM,
+          start,
+          end: ret['INFO.CHR2'] ? s1 : +ret['INFO.END'] ?? s1,
+        }),
+        CHROM,
+        POS: start,
+        ID,
+        REF,
+        ALT,
+        QUAL,
+        FILTER,
+        INFO,
+        FORMAT,
+        ...ret,
+      }
+    })
 
   return {
     vcfParser,
@@ -31,6 +53,7 @@ export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
       }
     }),
     columns: [
+      'loc',
       'CHROM',
       'POS',
       'ID',

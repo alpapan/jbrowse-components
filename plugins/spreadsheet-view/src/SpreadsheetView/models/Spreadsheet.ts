@@ -32,8 +32,9 @@ function stateModelFactory() {
       },
     }))
     .actions(self => ({
-      setData(data?: SpreadsheetData) {
+      setData(data?: SpreadsheetData, assemblyName?: string) {
         self.data = data
+        self.assemblyName = assemblyName
       },
     }))
 

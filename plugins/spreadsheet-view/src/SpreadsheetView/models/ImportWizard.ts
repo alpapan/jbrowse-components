@@ -190,8 +190,10 @@ function stateModelFactory() {
             .then(buffer => typeParser(buffer, self))
             .then(spreadsheet => {
               this.setLoaded()
+              console.log({ spreadsheet })
               getParent<SpreadsheetViewStateModel>(self).displaySpreadsheet(
                 spreadsheet,
+                assemblyName,
               )
             })
         } catch (e) {
