@@ -42,27 +42,28 @@ function stateModelFactory(schema: AnyConfigurationSchemaType) {
          * #method
          */
         contextMenuItems() {
-          const feature = self.contextMenuFeature
-          return [
-            ...superContextMenuItems(),
-            ...(feature
-              ? [
-                  {
-                    label: 'Open synteny view for this position',
-                    onClick: () => {
-                      getSession(self).queueDialog(handleClose => [
-                        LaunchSyntenyViewDialog,
-                        {
-                          model: self,
-                          handleClose,
-                          feature,
-                        },
-                      ])
-                    },
-                  },
-                ]
-              : []),
-          ]
+          return []
+          // const feature = self.contextMenuFeature
+          // return [
+          //   ...superContextMenuItems(),
+          //   ...(feature
+          //     ? [
+          //         {
+          //           label: 'Open synteny view for this position',
+          //           onClick: () => {
+          //             getSession(self).queueDialog(handleClose => [
+          //               LaunchSyntenyViewDialog,
+          //               {
+          //                 model: self,
+          //                 handleClose,
+          //                 feature,
+          //               },
+          //             ])
+          //           },
+          //         },
+          //       ]
+          //     : []),
+          // ]
         },
       }
     })
