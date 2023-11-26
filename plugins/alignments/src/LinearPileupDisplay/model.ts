@@ -20,8 +20,10 @@ import { SharedLinearPileupDisplayMixin } from './SharedLinearPileupDisplayMixin
 import { observable } from 'mobx'
 
 // async
-const SortByTagDlg = lazy(() => import('./components/SortByTag'))
-const ModificationsDlg = lazy(() => import('./components/ColorByModifications'))
+const SortByTagDialog = lazy(() => import('./components/SortByTagDialog'))
+const ModificationsDialog = lazy(
+  () => import('./components/ColorByModificationsDialog'),
+)
 
 type LGV = LinearGenomeViewModel
 
@@ -282,7 +284,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
                   label: 'Sort by tag...',
                   onClick: () => {
                     getSession(self).queueDialog(handleClose => [
-                      SortByTagDlg,
+                      SortByTagDialog,
                       { model: self, handleClose },
                     ])
                   },
@@ -305,7 +307,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
                   label: 'Modifications or methylation',
                   onClick: () => {
                     getSession(self).queueDialog(doneCallback => [
-                      ModificationsDlg,
+                      ModificationsDialog,
                       { model: self, handleClose: doneCallback },
                     ])
                   },
