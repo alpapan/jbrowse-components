@@ -229,78 +229,16 @@ function stateModelFactory(
     }))
     .actions(self => ({
       afterAttach() {
-        addDisposer(
-          self,
-          autorun(() => {
-            const {
-              SNPCoverageDisplay,
-              PileupDisplay,
-              coverageConf,
-              pileupConf,
-            } = self
-
-            if (!SNPCoverageDisplay) {
-              self.setSNPCoverageDisplay(coverageConf)
-            } else if (
-              !deepEqual(
-                coverageConf,
-                getSnapshot(SNPCoverageDisplay.configuration),
-              )
-            ) {
-              SNPCoverageDisplay.setHeight(self.snpCovHeight)
-              SNPCoverageDisplay.setConfig(self.coverageConf)
-            }
-
-            if (!PileupDisplay || self.lowerPanelType !== PileupDisplay.type) {
-              self.setPileupDisplay(pileupConf)
-            } else if (
-              !deepEqual(pileupConf, getSnapshot(PileupDisplay.configuration))
-            ) {
-              PileupDisplay.setConfig(self.pileupConf)
-            }
-
-            propagateColorBy(self as AlignmentsDisplayModel)
-            propagateFilterBy(self as AlignmentsDisplayModel)
-          }),
-        )
-
-        addDisposer(
-          self,
-          autorun(() => {
-            self.setSNPCoverageHeight(self.SNPCoverageDisplay.height)
-          }),
-        )
-
-        addDisposer(
-          self,
-          autorun(() => {
-            self.PileupDisplay.setHeight(
-              self.height - self.SNPCoverageDisplay.height,
-            )
-          }),
-        )
-      },
-      /**
-       * #action
-       */
-      async renderSvg(opts: { rasterizeLayers?: boolean }) {
-        const pileupHeight = self.height - self.SNPCoverageDisplay.height
-        await when(
-          () =>
-            !self.PileupDisplay.renderProps().notReady &&
-            !self.SNPCoverageDisplay.renderProps().notReady,
-        )
-        return (
-          <>
-            <g>{await self.SNPCoverageDisplay.renderSvg(opts)}</g>
-            <g transform={`translate(0 ${self.SNPCoverageDisplay.height})`}>
-              {await self.PileupDisplay.renderSvg({
-                ...opts,
-                overrideHeight: pileupHeight,
-              })}
-            </g>
-          </>
-        )
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        ;(async () => {
+          try {
+            const { doAfterAttach } = await import('./doAfterAttach')
+            doAfterAttach(self as LinearAlignmentsDisplayModel)
+          } catch (e) {
+            console.error(e)
+            self.setError(e)
+          }
+        })()
       },
     }))
     .views(self => {
@@ -340,6 +278,17 @@ function stateModelFactory(
         },
       }
     })
+    .actions(self => ({
+      /**
+       * #action
+       */
+      async renderSvg(opts: {
+        rasterizeLayers?: boolean
+      }): Promise<React.ReactNode> {
+        const { renderSvg } = await import('./renderSvg')
+        return renderSvg(self as LinearAlignmentsDisplayModel, opts)
+      },
+    }))
     .preProcessSnapshot(snap => {
       if (!snap) {
         return snap
