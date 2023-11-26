@@ -184,6 +184,9 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
     })
 
     .views(self => ({
+      /**
+       * #getter
+       */
       get drawn() {
         return self.lastDrawnOffsetPx !== undefined
       },
