@@ -166,7 +166,7 @@ function stateModelFactory() {
       },
 
       /**
-       * #getter
+       * #method
        */
       getFeatureOverlapping(
         blockKey: string,
@@ -177,14 +177,14 @@ function stateModelFactory() {
       },
 
       /**
-       * #getter
+       * #method
        */
       getFeatureByID(blockKey: string, id: string): LayoutRecord | undefined {
         return self.blockState.get(blockKey)?.layout?.getByID(id)
       },
 
       /**
-       * #getter
+       * #method
        */
       searchFeatureByID(id: string): LayoutRecord | undefined {
         let ret
