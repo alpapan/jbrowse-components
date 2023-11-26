@@ -9,7 +9,7 @@ import BaseDisplayComponent from '../../shared/components/BaseDisplayComponent'
 
 type LGV = LinearGenomeViewModel
 
-const Cloud = observer(function ({
+const PileupDisplayCanvas = observer(function ({
   model,
 }: {
   model: LinearPileupDisplayModel
@@ -26,7 +26,7 @@ const Cloud = observer(function ({
   // note: the position absolute below avoids scrollbar from appearing on track
   return (
     <canvas
-      data-testid="cloud-canvas"
+      data-testid="pileup-canvas"
       ref={cb}
       style={{ width, height, position: 'absolute' }}
       width={width * 2}
@@ -42,7 +42,7 @@ const LinearPileupReactComponent = observer(function ({
 }) {
   return (
     <BaseDisplayComponent model={model}>
-      <Cloud model={model} />
+      <PileupDisplayCanvas model={model} />
     </BaseDisplayComponent>
   )
 })
