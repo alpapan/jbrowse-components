@@ -17,13 +17,11 @@ export function getAlignmentShapeColor({
   tag,
   feature,
   config,
-  defaultColor,
   colorTagMap,
 }: {
   colorType: string
   tag: string
   feature: Feature
-  defaultColor: boolean
   config: AnyConfigurationModel
   colorTagMap: Record<string, string>
 }) {
@@ -80,8 +78,6 @@ export function getAlignmentShapeColor({
       return feature.get('flags') & 16 ? '#c8dcc8' : '#c8c8c8'
 
     default:
-      return defaultColor
-        ? 'lightgrey'
-        : readConfObject(config, 'color', { feature })
+      return readConfObject(config, 'color', { feature })
   }
 }

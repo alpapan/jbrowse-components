@@ -7,7 +7,6 @@ import {
 } from '../MismatchParser'
 import { getTagAlt } from '../util'
 import { fillRect, LayoutFeature } from './util'
-import { RenderArgsWithColor } from './makeImageData'
 import { colord } from '@jbrowse/core/util/colord'
 
 // render modifications stored in MM tag in BAM
@@ -25,18 +24,17 @@ export function renderModifications({
   feat,
   region,
   bpPerPx,
-  renderArgs,
   canvasWidth,
+  modificationTagMap,
 }: {
   ctx: CanvasRenderingContext2D
   feat: LayoutFeature
   region: Region
   bpPerPx: number
-  renderArgs: RenderArgsWithColor
   canvasWidth: number
+  modificationTagMap: any
 }) {
   const { feature, topPx, heightPx } = feat
-  const { modificationTagMap = {} } = renderArgs
 
   const seq = feature.get('seq') as string | undefined
 

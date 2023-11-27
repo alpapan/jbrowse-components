@@ -6,30 +6,35 @@ import { renderPerBaseQuality } from './renderPerBaseQuality'
 import { renderPerBaseLettering } from './renderPerBaseLettering'
 import { renderModifications } from './renderModifications'
 import { renderMethylation } from './renderMethylation'
-import { RenderArgsWithColor } from './makeImageData'
+import { AnyConfigurationModel } from '@jbrowse/core/configuration'
 
 export function renderAlignment({
   ctx,
   feat,
-  renderArgs,
   colorForBase,
   contrastForBase,
   charWidth,
   charHeight,
-  defaultColor,
   canvasWidth,
+  bpPerPx,
+  colorBy,
+  colorTagMap,
+  regions,
+  config,
 }: {
   ctx: CanvasRenderingContext2D
   feat: LayoutFeature
-  renderArgs: RenderArgsWithColor
   colorForBase: Record<string, string>
   contrastForBase: Record<string, string>
   charWidth: number
   charHeight: number
-  defaultColor: boolean
   canvasWidth: number
+  bpPerPx: number
+  colorBy: any
+  colorTagMap: any
+  regions: any
+  config: AnyConfigurationModel
 }) {
-  const { config, bpPerPx, regions, colorBy, colorTagMap = {} } = renderArgs
   const { tag = '', type: colorType = '' } = colorBy || {}
   const { feature } = feat
   const region = regions[0]
@@ -38,12 +43,11 @@ export function renderAlignment({
     feature,
     config,
     tag,
-    defaultColor,
     colorType,
     colorTagMap,
   })
 
-  renderAlignmentShape({ ctx, feat, renderArgs })
+  renderAlignmentShape({ ctx, feat, bpPerPx, regions })
 
   // second pass for color types that render per-base things that go over the
   // existing drawing
@@ -78,8 +82,8 @@ export function renderAlignment({
         feat,
         region,
         bpPerPx,
-        renderArgs,
         canvasWidth,
+        modificationTagMap: undefined,
       })
       break
 
@@ -89,7 +93,6 @@ export function renderAlignment({
         feat,
         region,
         bpPerPx,
-        renderArgs,
         canvasWidth,
       })
       break

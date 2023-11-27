@@ -1,7 +1,6 @@
 import { bpSpanPx, Region } from '@jbrowse/core/util'
 import { getMethBins } from '../MismatchParser'
 import { fillRect, LayoutFeature } from './util'
-import { RenderArgsWithColor } from './makeImageData'
 import { colord } from '@jbrowse/core/util/colord'
 
 // Color by methylation is slightly modified version of color by
@@ -11,17 +10,16 @@ export function renderMethylation({
   feat,
   region,
   bpPerPx,
-  renderArgs,
   canvasWidth,
+  regionSequence,
 }: {
   ctx: CanvasRenderingContext2D
   feat: LayoutFeature
   region: Region
   bpPerPx: number
-  renderArgs: RenderArgsWithColor
   canvasWidth: number
+  regionSequence?: string
 }) {
-  const { regionSequence } = renderArgs
   const { feature, topPx, heightPx } = feat
   if (!regionSequence) {
     throw new Error('region sequence required for methylation')

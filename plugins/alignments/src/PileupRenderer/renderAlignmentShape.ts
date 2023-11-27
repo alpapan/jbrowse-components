@@ -1,17 +1,17 @@
-import { bpSpanPx } from '@jbrowse/core/util'
-import { RenderArgsDeserialized } from './PileupRenderer'
+import { Region, bpSpanPx } from '@jbrowse/core/util'
 import { LayoutFeature } from './util'
 
 export function renderAlignmentShape({
   ctx,
   feat,
-  renderArgs,
+  regions,
+  bpPerPx,
 }: {
   ctx: CanvasRenderingContext2D
   feat: LayoutFeature
-  renderArgs: RenderArgsDeserialized
+  regions: Region[]
+  bpPerPx: number
 }) {
-  const { regions, bpPerPx } = renderArgs
   const { heightPx, topPx, feature } = feat
   const [region] = regions
   const s = feature.get('start')

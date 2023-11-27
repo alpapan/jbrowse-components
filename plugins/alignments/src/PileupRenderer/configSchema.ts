@@ -11,12 +11,11 @@ const PileupRenderer = ConfigurationSchema(
   {
     /**
      * #slot
-     * default magenta here is used to detect the user has not customized this
      */
     color: {
       type: 'color',
       description: 'the color of each feature in a pileup alignment',
-      defaultValue: '#f0f',
+      defaultValue: 'lightgrey',
       contextVariable: ['feature'],
     },
 
