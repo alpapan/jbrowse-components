@@ -22,7 +22,7 @@ import {
 import RpcManager from '../../rpc/RpcManager'
 import { Feature } from '../simpleFeature'
 import { BaseInternetAccountModel } from '../../pluggableElementTypes/models'
-import { ThemeOptions } from '@mui/material'
+import { Theme, ThemeOptions } from '@mui/material'
 
 export * from './util'
 
@@ -83,6 +83,7 @@ export type DialogComponentType =
 
 /** minimum interface that all session state models must implement */
 export interface AbstractSessionModel extends AbstractViewContainer {
+  theme: Theme
   jbrowse: IAnyStateTreeNode
   drawerPosition?: string
   configuration: AnyConfigurationModel

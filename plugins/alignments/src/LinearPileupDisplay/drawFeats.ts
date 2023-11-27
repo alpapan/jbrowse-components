@@ -22,7 +22,6 @@ export function drawFeats({
   width: number
   height: number
 }) {
-  // @ts-expect-error
   const { theme } = getSession(self)
   const { colorBy, colorTagMap, featureData: features } = self
   if (!features) {
@@ -49,7 +48,7 @@ export function drawFeats({
         topPx: rect.top! * 8,
         feature: rect.data as Feature,
       },
-      regions: view.staticBlocks.contentBlocks,
+      regions: view.dynamicBlocks.contentBlocks,
       config: self.rendererConfig,
       charWidth,
       charHeight,

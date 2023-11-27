@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Feature } from '@jbrowse/core/util'
 import { RenderArgsDeserializedWithFeaturesAndLayout } from './PileupRenderer'
 import { readConfObject } from '@jbrowse/core/configuration'
