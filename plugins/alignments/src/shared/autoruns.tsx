@@ -1,5 +1,4 @@
 import { getContainingView } from '@jbrowse/core/util'
-
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // locals
@@ -33,12 +32,12 @@ interface AnyLinearAlignmentsDisplay {
   ref: HTMLCanvasElement | null
 }
 
-type DrawFeaturesCallback<T> = (
-  self: T,
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-) => void
+type DrawFeaturesCallback<T> = (arg: {
+  self: T
+  ctx: CanvasRenderingContext2D
+  width: number
+  height: number
+}) => void
 
 function draw<T extends AnyLinearAlignmentsDisplay>(
   self: T,
@@ -62,7 +61,7 @@ function draw<T extends AnyLinearAlignmentsDisplay>(
   ctx.clearRect(0, 0, canvas.width, self.height * 2)
   ctx.resetTransform()
   ctx.scale(2, 2)
-  cb(self, ctx, canvas.width, self.height)
+  cb({ self, ctx, width: canvas.width, height: self.height })
   self.setLastDrawnOffsetPx(view.offsetPx)
   self.setLastDrawnBpPerPx(view.bpPerPx)
 }

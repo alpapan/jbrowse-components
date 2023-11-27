@@ -1,6 +1,7 @@
 import { Feature, getContainingView, getSession } from '@jbrowse/core/util'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
-
+import { Theme } from '@mui/material'
+// locals
 import { LinearPileupDisplayModel } from './model'
 import { renderAlignment } from '../PileupRenderer/renderAlignment'
 import {
@@ -8,7 +9,6 @@ import {
   getColorBaseMap,
   getContrastBaseMap,
 } from '../PileupRenderer/util'
-import { Theme } from '@mui/material'
 
 type LGV = LinearGenomeViewModel
 
@@ -16,14 +16,14 @@ export function drawFeats({
   self,
   ctx,
   width,
-  theme,
 }: {
   self: LinearPileupDisplayModel
   ctx: CanvasRenderingContext2D
   width: number
   height: number
-  theme: Theme
 }) {
+  // @ts-expect-error
+  const { theme } = getSession(self)
   const { colorBy, colorTagMap, featureData: features } = self
   if (!features) {
     return
@@ -39,14 +39,14 @@ export function drawFeats({
   const colorForBase = getColorBaseMap(theme)
   const contrastForBase = getContrastBaseMap(theme)
   const { charWidth, charHeight } = getCharWidthHeight()
-  for (const [id, rect] of self.layout.rectangles.entries()) {
+  for (const rect of self.layout.rectangles.values()) {
     renderAlignment({
       ctx,
       colorForBase,
       contrastForBase,
       feat: {
-        heightPx: rect.originalHeight,
-        topPx: rect.top!,
+        heightPx: rect.originalHeight - 3,
+        topPx: rect.top! * 8,
         feature: rect.data as Feature,
       },
       regions: view.staticBlocks.contentBlocks,
