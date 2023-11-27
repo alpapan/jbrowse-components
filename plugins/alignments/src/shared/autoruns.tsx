@@ -10,12 +10,12 @@ import { LinearReadArcsDisplayModel } from '../LinearReadArcsDisplay/model'
 type LGV = LinearGenomeViewModel
 
 export function fetchFeaturesAutorun(
-  self: LinearReadArcsDisplayModel | LinearReadCloudDisplayModel,
+  model: LinearReadArcsDisplayModel | LinearReadCloudDisplayModel,
 ) {
   createAutorun(
-    self,
+    model,
     async () => {
-      await fetchFeatures(self)
+      await fetchFeatures(model)
     },
     { delay: 1000 },
   )
@@ -33,18 +33,18 @@ interface AnyLinearAlignmentsDisplay {
 }
 
 type DrawFeaturesCallback<T> = (arg: {
-  self: T
+  model: T
   ctx: CanvasRenderingContext2D
   width: number
   height: number
 }) => void
 
 function draw<T extends AnyLinearAlignmentsDisplay>(
-  self: T,
+  model: T,
   view: LGV,
   cb: DrawFeaturesCallback<T>,
 ) {
-  const canvas = self.ref
+  const canvas = model.ref
   if (!canvas) {
     return
   }
@@ -54,36 +54,36 @@ function draw<T extends AnyLinearAlignmentsDisplay>(
     return
   }
 
-  if (!self.featureData) {
+  if (!model.featureData) {
     return
   }
 
-  ctx.clearRect(0, 0, canvas.width, self.height * 2)
+  ctx.clearRect(0, 0, canvas.width, model.height * 2)
   ctx.resetTransform()
   ctx.scale(2, 2)
-  cb({ self, ctx, width: canvas.width, height: self.height })
-  self.setLastDrawnOffsetPx(view.offsetPx)
-  self.setLastDrawnBpPerPx(view.bpPerPx)
+  cb({ model, ctx, width: canvas.width, height: model.height })
+  model.setLastDrawnOffsetPx(view.offsetPx)
+  model.setLastDrawnBpPerPx(view.bpPerPx)
 }
 
 export function drawAutorun<T extends AnyLinearAlignmentsDisplay>(
-  self: T,
+  model: T,
   cb: DrawFeaturesCallback<T>,
 ) {
   // first autorun instantly draws if bpPerPx changes
-  createAutorun(self, async () => {
-    const view = getContainingView(self) as LGV
-    if (view.bpPerPx !== self.lastDrawnBpPerPx) {
-      draw(self, view, cb)
+  createAutorun(model, async () => {
+    const view = getContainingView(model) as LGV
+    if (view.bpPerPx !== model.lastDrawnBpPerPx) {
+      draw(model, view, cb)
     }
   })
 
   // second autorun draws after delay 1000 e.g. if offsetPx changes
   createAutorun(
-    self,
+    model,
     async () => {
-      const view = getContainingView(self) as LGV
-      draw(self, view, cb)
+      const view = getContainingView(model) as LGV
+      draw(model, view, cb)
     },
     { delay: 1000 },
   )

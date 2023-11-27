@@ -11,18 +11,18 @@ function getId(id: string) {
 type LGV = LinearGenomeViewModel
 
 export async function renderSvg<T extends { id: string; height: number }>(
-  self: T,
+  model: T,
   opts: { rasterizeLayers?: boolean },
-  cb: (
-    model: T,
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-  ) => void,
+  cb: (arg: {
+    model: T
+    ctx: CanvasRenderingContext2D
+    width: number
+    height: number
+  }) => void,
 ) {
-  const view = getContainingView(self) as LGV
+  const view = getContainingView(model) as LGV
   const width = view.dynamicBlocks.totalWidthPx
-  const height = self.height
+  const height = model.height
   if (opts.rasterizeLayers) {
     const canvas = document.createElement('canvas')
     canvas.width = width * 2
@@ -32,7 +32,7 @@ export async function renderSvg<T extends { id: string; height: number }>(
       return
     }
     ctx.scale(2, 2)
-    cb(self, ctx, width, height)
+    cb({ model, ctx, width, height })
     return (
       <image
         width={width}
@@ -44,8 +44,8 @@ export async function renderSvg<T extends { id: string; height: number }>(
     // @ts-ignore
     const C2S = await import('canvas2svg')
     const ctx = new C2S.default(width, height)
-    cb(self, ctx, width, height)
-    const clipid = getId(self.id)
+    cb({ model, ctx, width, height })
+    const clipid = getId(model.id)
     return (
       <>
         <defs>

@@ -9,16 +9,19 @@ import { drawLongReadFeatures } from './drawLongReadFeatures'
 
 type LGV = LinearGenomeViewModel
 
-export function drawFeats(
-  self: LinearReadCloudDisplayModel,
-  ctx: CanvasRenderingContext2D,
-) {
-  const { featureData } = self
+export function drawFeats({
+  model,
+  ctx,
+}: {
+  model: LinearReadCloudDisplayModel
+  ctx: CanvasRenderingContext2D
+}) {
+  const { featureData } = model
   if (!featureData) {
     return
   }
-  const { assemblyManager } = getSession(self)
-  const view = getContainingView(self) as LGV
+  const { assemblyManager } = getSession(model)
+  const view = getContainingView(model) as LGV
   const assemblyName = view.assemblyNames[0]
   const asm = assemblyManager.get(assemblyName)
   if (!asm) {
@@ -28,8 +31,8 @@ export function drawFeats(
   const hasPaired = hasPairedReads(featureData)
 
   if (hasPaired) {
-    drawPairFeatures({ self, view, asm, ctx, featureData })
+    drawPairFeatures({ model, view, asm, ctx, featureData })
   } else {
-    drawLongReadFeatures({ self, view, asm, ctx, featureData })
+    drawLongReadFeatures({ model, view, asm, ctx, featureData })
   }
 }

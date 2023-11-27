@@ -39,12 +39,17 @@ function drawLineAtOffset(
   ctx.stroke()
 }
 
-export function drawFeats(
-  self: LinearReadArcsDisplayModel,
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-) {
+export function drawFeats({
+  model,
+  ctx,
+  width,
+  height,
+}: {
+  model: LinearReadArcsDisplayModel
+  ctx: CanvasRenderingContext2D
+  width: number
+  height: number
+}) {
   const {
     featureData,
     colorBy,
@@ -52,12 +57,12 @@ export function drawFeats(
     drawLongRange,
     lineWidthSetting,
     jitterVal,
-  } = self
+  } = model
   if (!featureData) {
     return
   }
-  const view = getContainingView(self) as LGV
-  const { assemblyManager } = getSession(self)
+  const view = getContainingView(model) as LGV
+  const { assemblyManager } = getSession(model)
   const { chains, stats } = featureData
   const hasPaired = hasPairedReads(featureData)
   const asm = assemblyManager.get(view.assemblyNames[0])

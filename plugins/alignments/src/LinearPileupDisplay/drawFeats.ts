@@ -13,32 +13,32 @@ import {
 type LGV = LinearGenomeViewModel
 
 export function drawFeats({
-  self,
+  model,
   ctx,
   width,
 }: {
-  self: LinearPileupDisplayModel
+  model: LinearPileupDisplayModel
   ctx: CanvasRenderingContext2D
   width: number
   height: number
 }) {
-  const { theme } = getSession(self)
-  const { colorBy, colorTagMap, featureData: features } = self
+  const { theme } = getSession(model)
+  const { colorBy, colorTagMap, featureData: features } = model
   if (!features) {
     return
   }
-  const view = getContainingView(self) as LGV
+  const view = getContainingView(model) as LGV
   const { assemblyNames, bpPerPx } = view
-  const { assemblyManager } = getSession(self)
+  const { assemblyManager } = getSession(model)
   const asm = assemblyManager.get(assemblyNames[0])
-  if (!asm || !self.featureData) {
+  if (!asm || !model.featureData) {
     return
   }
 
   const colorForBase = getColorBaseMap(theme)
   const contrastForBase = getContrastBaseMap(theme)
   const { charWidth, charHeight } = getCharWidthHeight()
-  for (const rect of self.layout.rectangles.values()) {
+  for (const rect of model.layout.rectangles.values()) {
     renderAlignment({
       ctx,
       colorForBase,
@@ -49,7 +49,7 @@ export function drawFeats({
         feature: rect.data as Feature,
       },
       regions: view.dynamicBlocks.contentBlocks,
-      config: self.rendererConfig,
+      config: model.rendererConfig,
       charWidth,
       charHeight,
       canvasWidth: width,

@@ -11,13 +11,13 @@ import { fillRectCtx, strokeRectCtx } from './util'
 
 export function drawLongReadFeatures({
   ctx,
-  self,
+  model,
   featureData,
   view,
   asm,
 }: {
   ctx: CanvasRenderingContext2D
-  self: LinearReadCloudDisplayModel
+  model: LinearReadCloudDisplayModel
   featureData: FeatureData
   view: LinearGenomeViewModel
   asm: Assembly
@@ -25,8 +25,8 @@ export function drawLongReadFeatures({
   const distances: number[] = []
   const minXs: number[] = []
   const { chains } = featureData
-  const { height } = self
-  const featureHeight = getConf(self, 'featureHeight')
+  const { height } = model
+  const featureHeight = getConf(model, 'featureHeight')
 
   // get bounds on the 'distances' (pixel span that a particular split long
   // read 'feature' would have in view)

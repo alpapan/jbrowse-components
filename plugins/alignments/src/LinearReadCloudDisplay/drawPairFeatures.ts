@@ -28,20 +28,20 @@ interface FeatureCoord {
 
 export function drawPairFeatures({
   ctx,
-  self,
+  model,
   featureData,
   view,
   asm,
 }: {
   ctx: CanvasRenderingContext2D
-  self: LinearReadCloudDisplayModel
+  model: LinearReadCloudDisplayModel
   featureData: FeatureData
   view: LinearGenomeViewModel
   asm: Assembly
 }) {
   const coords: FeatureCoord[] = []
-  const featureHeight = getConf(self, 'featureHeight')
-  const type = self.colorBy?.type || 'insertSizeAndOrientation'
+  const featureHeight = getConf(model, 'featureHeight')
+  const type = model.colorBy?.type || 'insertSizeAndOrientation'
   const { chains, stats } = featureData
 
   for (const chain of chains) {
@@ -81,7 +81,7 @@ export function drawPairFeatures({
           distance,
         })
       }
-    } else if (self.drawSingletons) {
+    } else if (model.drawSingletons) {
       const v0 = chain[0]
 
       const ra1 = asm.getCanonicalRefName(v0.refName) || v0.refName
@@ -97,7 +97,7 @@ export function drawPairFeatures({
 
   const maxD = Math.log(max(coords.map(c => c.distance)))
   const minD = Math.max(Math.log(min(coords.map(c => c.distance))) - 1, 0)
-  const scaler = (self.height - 20) / (maxD - minD)
+  const scaler = (model.height - 20) / (maxD - minD)
   for (const { r1e, r1s, r2e, r2s, distance, v0, v1 } of coords) {
     const w1 = Math.max(r1e - r1s, 2)
     const w2 = Math.max(r2e - r2s, 2)
