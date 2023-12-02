@@ -5,13 +5,12 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { ErrorMessage, LoadingEllipses } from '@jbrowse/core/ui'
 import { useResizeBar } from '@jbrowse/core/ui/useResizeBar'
 import ResizeBar from '@jbrowse/core/ui/ResizeBar'
-import { getSession, measureGridWidth } from '@jbrowse/core/util'
+import { measureGridWidth } from '@jbrowse/core/util'
 import { Link } from '@mui/material'
-import { getParent } from 'mobx-state-tree'
-import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
 
 // locals
 import { SpreadsheetModel } from '../models/Spreadsheet'
+import { locationLinkClick } from './util'
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -21,28 +20,6 @@ const useStyles = makeStyles()(theme => ({
     overflow: 'auto',
   },
 }))
-
-type LGV = LinearGenomeViewModel
-type MaybeLGV = LinearGenomeViewModel | undefined
-
-async function locationLinkClick(
-  spreadsheet: SpreadsheetModel,
-  locString: string,
-) {
-  const session = getSession(spreadsheet)
-  const { assemblyName } = spreadsheet
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { id } = getParent<any>(spreadsheet)
-
-  const newViewId = `${id}_${assemblyName}`
-  let view = session.views.find(v => v.id === newViewId) as MaybeLGV
-  if (!view) {
-    view = session.addView('LinearGenomeView', {
-      id: newViewId,
-    }) as LGV
-  }
-  await view.navToLocString(locString, assemblyName)
-}
 
 const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
   const { ref, scrollLeft } = useResizeBar()

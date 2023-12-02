@@ -8,9 +8,6 @@ import ImportWizard from './ImportWizard'
 import Spreadsheet from './Spreadsheet'
 import { SpreadsheetViewModel } from '../models/SpreadsheetView'
 
-const headerHeight = 52
-const statusBarHeight = 40
-
 const useStyles = makeStyles()(theme => ({
   contentArea: {
     overflow: 'auto',
