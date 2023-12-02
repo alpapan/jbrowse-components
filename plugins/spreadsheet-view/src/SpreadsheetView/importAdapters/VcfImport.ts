@@ -1,6 +1,7 @@
 import VCF from '@gmod/vcf'
 import { assembleLocString } from '@jbrowse/core/util'
 import { bufferToString, ParseOptions } from './ImportUtils'
+import LocString from './LocString'
 
 export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
   const { selectedAssemblyName } = options
@@ -63,6 +64,16 @@ export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
       ...keys,
     ],
     assemblyName: selectedAssemblyName,
+    CustomComponents: {
+      loc: {
+        Component: LocString,
+        props: {
+          getMenuItems: (row: any[]) => {
+            return [{ label: 'Launch linear genome view', onClick: () => {} }]
+          },
+        },
+      },
+    },
   }
 }
 

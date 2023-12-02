@@ -43,16 +43,15 @@ export async function parseBedPEBuffer(buffer: Buffer, options: ParseOptions) {
     ...names.slice(9),
   ])
   const rows = []
-  const flip = false
   for (let j = 0; i < lines.length; i++, j++) {
     const line = lines[i]
     const l = line.split('\t')
-    const ref1 = l[flip ? 3 : 0]
-    const start1 = +l[flip ? 4 : 1]
-    const end1 = +l[flip ? 5 : 2]
-    const ref2 = l[!flip ? 3 : 0]
-    const start2 = +l[!flip ? 4 : 1]
-    const end2 = +l[!flip ? 5 : 2]
+    const ref1 = l[0]
+    const start1 = +l[1]
+    const end1 = +l[2]
+    const ref2 = l[3]
+    const start2 = +l[4]
+    const end2 = +l[5]
     const name = l[6]
     const score = +l[7]
     const strand1 = parseStrand(l[8])

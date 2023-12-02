@@ -1,3 +1,4 @@
+import { Button } from '@mui/material'
 import React from 'react'
 
 function parseError(str: string) {
@@ -28,7 +29,13 @@ function parseError(str: string) {
   return snapshotError
 }
 
-const ErrorMessage = ({ error }: { error: unknown }) => {
+const ErrorMessage = ({
+  error,
+  clearError,
+}: {
+  error: unknown
+  clearError: () => void
+}) => {
   const str = `${error}`
   const snapshotError = parseError(str)
   return (
@@ -42,7 +49,8 @@ const ErrorMessage = ({ error }: { error: unknown }) => {
         border: '1px solid black',
       }}
     >
-      {str.slice(0, 10000)}
+      {str.slice(0, 10000)}{' '}
+      {clearError ? <Button onClick={clearError}>Clear</Button> : null}
       {snapshotError ? (
         <pre
           style={{

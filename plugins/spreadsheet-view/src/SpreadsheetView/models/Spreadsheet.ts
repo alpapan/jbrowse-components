@@ -1,3 +1,4 @@
+import React from 'react'
 import { getSession } from '@jbrowse/core/util'
 import { autorun } from 'mobx'
 import { addDisposer, types, Instance } from 'mobx-state-tree'
@@ -11,6 +12,14 @@ function x() {} // eslint-disable-line @typescript-eslint/no-unused-vars
 export interface SpreadsheetData {
   rows: Record<string, unknown>[]
   columns: string[]
+  CustomComponents?: Record<
+    string,
+    {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Component: React.FC<any>
+      props: Record<string, unknown>
+    }
+  >
 }
 
 function stateModelFactory() {

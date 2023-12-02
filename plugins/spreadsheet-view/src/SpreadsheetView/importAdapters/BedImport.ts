@@ -1,5 +1,7 @@
+import { assembleLocString } from '@jbrowse/core/util'
 import { ParseOptions } from './ImportUtils'
 import { parseStrand } from './util'
+import LocString from './LocString'
 
 const MAX_SET_SCAN = 100
 const MAX_BED_COL = 6
@@ -67,6 +69,11 @@ export async function parseBedBuffer(buffer: Buffer, options: ParseOptions) {
 
     rows.push({
       ...rest,
+      loc: assembleLocString({
+        refName,
+        start,
+        end,
+      }),
       id: `row_${i}`,
       start,
       end,
@@ -77,5 +84,12 @@ export async function parseBedBuffer(buffer: Buffer, options: ParseOptions) {
     })
   }
 
-  return { header, rows, columns: [...columns] }
+  return {
+    header,
+    rows,
+    columns: [...columns],
+    customComponents: {
+      loc: LocString,
+    },
+  }
 }

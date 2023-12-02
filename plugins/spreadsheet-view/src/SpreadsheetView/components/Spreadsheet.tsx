@@ -2,15 +2,12 @@ import React, { useMemo, useState } from 'react'
 import { observer } from 'mobx-react'
 import { makeStyles } from 'tss-react/mui'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
-import { ErrorMessage, LoadingEllipses } from '@jbrowse/core/ui'
+import { ErrorMessage, LoadingEllipses, ResizeBar } from '@jbrowse/core/ui'
 import { useResizeBar } from '@jbrowse/core/ui/useResizeBar'
-import ResizeBar from '@jbrowse/core/ui/ResizeBar'
 import { measureGridWidth } from '@jbrowse/core/util'
-import { Link } from '@mui/material'
 
 // locals
 import { SpreadsheetModel } from '../models/Spreadsheet'
-import { locationLinkClick } from './util'
 
 const useStyles = makeStyles()(theme => ({
   root: {
@@ -23,7 +20,7 @@ const useStyles = makeStyles()(theme => ({
 
 const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
   const { ref, scrollLeft } = useResizeBar()
-  const { rows, columns } = model.data!
+  const { rows, columns, CustomComponents } = model.data!
   const w0 = useMemo(
     () => columns.map(e => measureGridWidth(rows.map(r => r[e]))),
     [columns, rows],
@@ -33,7 +30,9 @@ const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
 
   return (
     <div ref={ref}>
-      {error ? <ErrorMessage error={error} /> : undefined}
+      {error ? (
+        <ErrorMessage error={error} clearError={() => setError(undefined)} />
+      ) : undefined}
       <ResizeBar
         widths={widths}
         setWidths={setWidths}
@@ -51,29 +50,23 @@ const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
         }}
         // @ts-expect-error
         rows={rows}
-        columns={columns.map((m, i) => ({
-          field: m,
-          width: widths[i],
-          renderCell:
-            m === 'loc'
+        columns={columns.map((m, i) => {
+          const res = CustomComponents?.[m]
+          return {
+            field: m,
+            width: widths[i],
+            renderCell: res
               ? args => (
-                  <Link
-                    href="#"
-                    onClick={async event => {
-                      try {
-                        event.preventDefault()
-                        await locationLinkClick(model, args.value)
-                      } catch (e) {
-                        console.error(e)
-                        setError(e)
-                      }
-                    }}
-                  >
-                    {args.value}
-                  </Link>
+                  <res.Component
+                    setError={setError}
+                    value={args.value}
+                    model={model}
+                    {...res.props}
+                  />
                 )
               : undefined,
-        }))}
+          }
+        })}
       />
     </div>
   )
