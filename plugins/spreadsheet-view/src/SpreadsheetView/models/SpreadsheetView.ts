@@ -5,6 +5,7 @@ import { getSession } from '@jbrowse/core/util'
 // icons
 import FolderOpenIcon from '@mui/icons-material/FolderOpen'
 
+// locals
 import spreadsheetModelFactory, { SpreadsheetData } from './Spreadsheet'
 import importWizardFactory from './ImportWizard'
 

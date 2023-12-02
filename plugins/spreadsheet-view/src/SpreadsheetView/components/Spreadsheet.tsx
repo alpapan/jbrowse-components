@@ -9,6 +9,7 @@ import { getSession, measureGridWidth } from '@jbrowse/core/util'
 import { Link } from '@mui/material'
 import { getParent } from 'mobx-state-tree'
 import { LinearGenomeViewModel } from '@jbrowse/plugin-linear-genome-view'
+
 // locals
 import { SpreadsheetModel } from '../models/Spreadsheet'
 
@@ -30,7 +31,6 @@ async function locationLinkClick(
 ) {
   const session = getSession(spreadsheet)
   const { assemblyName } = spreadsheet
-  console.log({ assemblyName })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = getParent<any>(spreadsheet)
 
@@ -87,7 +87,6 @@ const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
                         event.preventDefault()
                         await locationLinkClick(model, args.value)
                       } catch (e) {
-                        console.log({ setError })
                         console.error(e)
                         setError(e)
                       }
@@ -103,16 +102,10 @@ const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
   )
 })
 
-const Spreadsheet = observer(function ({
-  model,
-  height,
-}: {
-  model: SpreadsheetModel
-  height: number
-}) {
+const Spreadsheet = observer(function ({ model }: { model: SpreadsheetModel }) {
   const { classes } = useStyles()
   return (
-    <div className={classes.root} style={{ height }}>
+    <div className={classes.root}>
       {model?.data ? (
         <DataTable model={model} />
       ) : (

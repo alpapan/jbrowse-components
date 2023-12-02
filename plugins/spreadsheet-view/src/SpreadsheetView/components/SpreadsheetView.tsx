@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { observer } from 'mobx-react'
 import { ResizeHandle } from '@jbrowse/core/ui'
@@ -28,24 +28,28 @@ const SpreadsheetView = observer(function ({
 }: {
   model: SpreadsheetViewModel
 }) {
+  const [initialHeight, setInitialHeight] = useState<number>(0)
   const { classes } = useStyles()
   const { spreadsheet, hideVerticalResizeHandle, height } = model
+  console.log({
+    initialHeight,
+  })
   return (
     <div>
-      {!spreadsheet.data ? (
-        <ImportWizard model={model.importWizard} />
-      ) : (
-        <div className={classes.contentArea}>
-          <Spreadsheet
-            model={spreadsheet}
-            height={height - headerHeight - statusBarHeight}
-          />
-        </div>
-      )}
+      <div style={{ height, overflow: 'auto' }}>
+        {!spreadsheet.data ? (
+          <ImportWizard model={model.importWizard} />
+        ) : (
+          <div className={classes.contentArea}>
+            <Spreadsheet model={spreadsheet} />
+          </div>
+        )}
+      </div>
 
       {hideVerticalResizeHandle ? null : (
         <ResizeHandle
-          onDrag={model.resizeHeight}
+          onMouseDown={() => setInitialHeight(height)}
+          onDrag={(_, totalDist) => model.setHeight(initialHeight - totalDist)}
           className={classes.resizeHandle}
         />
       )}
