@@ -10,12 +10,17 @@ import {
 } from '@mui/material'
 import { observer } from 'mobx-react'
 import { getRoot } from 'mobx-state-tree'
+import { makeStyles } from 'tss-react/mui'
 import { AbstractRootModel, getSession } from '@jbrowse/core/util'
-import { FileSelector, ErrorMessage, AssemblySelector } from '@jbrowse/core/ui'
+import {
+  FileSelector,
+  ErrorMessage,
+  AssemblySelector,
+  LoadingEllipses,
+} from '@jbrowse/core/ui'
 
 // locals
 import { ImportWizardModel } from '../models/ImportWizard'
-import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()({
   container: {
@@ -29,15 +34,16 @@ const ImportWizard = observer(({ model }: { model: ImportWizardModel }) => {
   const session = getSession(model)
   const { classes } = useStyles()
   const { assemblyNames, assemblyManager } = session
-  const { fileType, canCancel, fileSource, fileTypes, error } = model
+  const { fileType, canCancel, fileSource, fileTypes, error, loading } = model
   const [selected, setSelected] = useState(assemblyNames[0])
   const err = assemblyManager.get(selected)?.error || error
   const showRowControls = fileType === 'CSV' || fileType === 'TSV'
-  const rootModel = getRoot(model)
+  const rootModel = getRoot<AbstractRootModel>(model)
 
   return (
     <div className={classes.container}>
       {err ? <ErrorMessage error={err} /> : null}
+      {loading ? <LoadingEllipses /> : null}
       <div>
         <FormControl component="fieldset">
           <FormLabel component="legend">Tabular file</FormLabel>
@@ -45,7 +51,7 @@ const ImportWizard = observer(({ model }: { model: ImportWizardModel }) => {
             <FileSelector
               location={fileSource}
               setLocation={arg => model.setFileSource(arg)}
-              rootModel={rootModel as AbstractRootModel}
+              rootModel={rootModel}
             />
           </FormGroup>
         </FormControl>

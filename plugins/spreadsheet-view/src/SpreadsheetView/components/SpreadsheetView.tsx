@@ -16,12 +16,9 @@ const useStyles = makeStyles()(theme => ({
     overflow: 'auto',
   },
   resizeHandle: {
-    height: 3,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    background: theme.palette.action.disabled,
+    height: 5,
     boxSizing: 'border-box',
+    background: theme.palette.action.disabled,
     borderTop: '1px solid #fafafa',
   },
 }))
@@ -33,7 +30,6 @@ const SpreadsheetView = observer(function ({
 }) {
   const { classes } = useStyles()
   const { spreadsheet, hideVerticalResizeHandle, height } = model
-
   return (
     <div>
       {!spreadsheet.data ? (

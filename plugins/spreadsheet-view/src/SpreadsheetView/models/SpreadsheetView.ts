@@ -13,6 +13,8 @@ const defaultHeight = 440
 /**
  * #stateModel SpreadsheetView
  * #category view
+ * extends
+ * - [BaseViewModel](../baseviewmodel)
  */
 function x() {} // eslint-disable-line @typescript-eslint/no-unused-vars
 
@@ -43,13 +45,11 @@ function stateModelFactory() {
         /**
          * #property
          */
-        importWizard: types.optional(ImportWizard, () => ImportWizard.create()),
+        importWizard: types.optional(ImportWizard, {}),
         /**
          * #property
          */
-        spreadsheet: types.optional(SpreadsheetModelType, () =>
-          SpreadsheetModelType.create(),
-        ),
+        spreadsheet: types.optional(SpreadsheetModelType, {}),
       }),
     )
     .volatile(() => ({

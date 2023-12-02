@@ -184,18 +184,14 @@ function stateModelFactory() {
               ).toLocaleString()}Mb.`,
             )
           }
-          await filehandle
-            .readFile()
-            .then(buffer => (self.requiresUnzip ? unzip(buffer) : buffer))
-            .then(buffer => typeParser(buffer, self))
-            .then(spreadsheet => {
-              this.setLoaded()
-              console.log({ spreadsheet })
-              getParent<SpreadsheetViewStateModel>(self).displaySpreadsheet(
-                spreadsheet,
-                assemblyName,
-              )
-            })
+          const buffer = await filehandle.readFile()
+          const buf2 = self.requiresUnzip ? await unzip(buffer) : buffer
+          const spreadsheet = await typeParser(buf2, self)
+          this.setLoaded()
+          getParent<SpreadsheetViewStateModel>(self).displaySpreadsheet(
+            spreadsheet,
+            assemblyName,
+          )
         } catch (e) {
           console.error(e)
           this.setError(e)

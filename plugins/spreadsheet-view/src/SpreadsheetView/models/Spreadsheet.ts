@@ -16,6 +16,9 @@ export interface SpreadsheetData {
 function stateModelFactory() {
   return types
     .model('Spreadsheet', {
+      /**
+       * #property
+       */
       assemblyName: types.maybe(types.string),
     })
     .volatile(() => ({
@@ -32,6 +35,9 @@ function stateModelFactory() {
       },
     }))
     .actions(self => ({
+      /**
+       * #action
+       */
       setData(data?: SpreadsheetData, assemblyName?: string) {
         self.data = data
         self.assemblyName = assemblyName
