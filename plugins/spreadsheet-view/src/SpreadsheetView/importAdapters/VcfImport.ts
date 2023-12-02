@@ -1,5 +1,7 @@
 import VCF from '@gmod/vcf'
 import { assembleLocString } from '@jbrowse/core/util'
+
+// locals
 import { bufferToString, ParseOptions } from './ImportUtils'
 import LocString from './LocString'
 

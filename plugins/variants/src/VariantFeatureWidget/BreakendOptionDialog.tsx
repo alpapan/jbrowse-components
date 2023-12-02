@@ -10,7 +10,6 @@ import {
 } from '@mui/material'
 import { makeStyles } from 'tss-react/mui'
 import { getSnapshot } from 'mobx-state-tree'
-// jbrowse
 import { Dialog } from '@jbrowse/core/ui'
 import { getSession, Feature } from '@jbrowse/core/util'
 

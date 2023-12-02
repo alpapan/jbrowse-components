@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react'
+import React, { Suspense, lazy, useState } from 'react'
 import { Link, Typography } from '@mui/material'
-import SimpleFeature, {
+import {
+  getEnv,
+  getSession,
+  SimpleFeature,
   SimpleFeatureSerialized,
-} from '@jbrowse/core/util/simpleFeature'
-import { getEnv, getSession } from '@jbrowse/core/util'
+} from '@jbrowse/core/util'
 import { BaseCard } from '@jbrowse/core/BaseFeatureWidget/BaseFeatureDetail'
-import BreakendOptionDialog from './BreakendOptionDialog'
+
+// lazies
+const BreakendOptionDialog = lazy(() => import('./BreakendOptionDialog'))
 
 export default function BreakendPanel(props: {
   locStrings: string[]
@@ -77,14 +81,14 @@ export default function BreakendPanel(props: {
             ))}
           </ul>
           {breakpointDialog ? (
-            <BreakendOptionDialog
-              model={model}
-              feature={simpleFeature}
-              viewType={viewType}
-              handleClose={() => {
-                setBreakpointDialog(false)
-              }}
-            />
+            <Suspense fallback={null}>
+              <BreakendOptionDialog
+                model={model}
+                feature={simpleFeature}
+                viewType={viewType}
+                handleClose={() => setBreakpointDialog(false)}
+              />
+            </Suspense>
           ) : null}
         </div>
       ) : null}

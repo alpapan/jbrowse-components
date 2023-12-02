@@ -7,16 +7,21 @@ import MoreHoriz from '@mui/icons-material/MoreHoriz'
 // locals
 import { locationLinkClick } from '../components/util'
 import { SpreadsheetModel } from '../models/Spreadsheet'
+import { MenuItem } from '@jbrowse/core/ui'
 
 export default function LocString({
   value,
   model,
   row,
+  getMenuItems,
   setError,
 }: {
   value: string
   model: SpreadsheetModel
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   row: any[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getMenuItems: (row: any[]) => MenuItem[]
   setError: (e: unknown) => void
 }) {
   return (
@@ -33,7 +38,7 @@ export default function LocString({
       }}
     >
       {value}{' '}
-      <CascadingMenuButton menuItems={getMenuItems()}>
+      <CascadingMenuButton menuItems={getMenuItems(row)}>
         <MoreHoriz />
       </CascadingMenuButton>
     </Link>

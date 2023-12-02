@@ -61,6 +61,7 @@ const DataTable = observer(function ({ model }: { model: SpreadsheetModel }) {
                     setError={setError}
                     value={args.value}
                     model={model}
+                    row={args.row}
                     {...res.props}
                   />
                 )
