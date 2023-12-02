@@ -2,13 +2,13 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import { Divider, Paper } from '@mui/material'
 import { FeatureDetails } from '@jbrowse/core/BaseFeatureWidget/BaseFeatureDetail'
+import { SimpleFeatureSerialized } from '@jbrowse/core/util'
 import { parseBreakend } from '@gmod/vcf'
 
 // locals
 import VariantSampleGrid from './VariantSampleGrid'
 import BreakendPanel from './BreakendPanel'
 import VariantAnnotationTable from './VariantAnnotationTable'
-import { SimpleFeatureSerialized } from '@jbrowse/core/util'
 
 const basicDescriptions = {
   CHROM: 'chromosome: An identifier from the reference genome',

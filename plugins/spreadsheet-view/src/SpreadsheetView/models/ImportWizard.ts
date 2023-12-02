@@ -14,7 +14,7 @@ const fileTypeParsers = {
   VCF: () => import('../importAdapters/VcfImport').then(r => r.parseVcfBuffer),
   BED: () => import('../importAdapters/BedImport').then(r => r.parseBedBuffer),
   BEDPE: () =>
-    import('../importAdapters/BedImport').then(r => r.parseBedPEBuffer),
+    import('../importAdapters/BedpeImport').then(r => r.parseBedPEBuffer),
   'STAR-Fusion': () =>
     import('../importAdapters/STARFusionImport').then(
       r => r.parseSTARFusionBuffer,

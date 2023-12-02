@@ -1,6 +1,6 @@
 import VCF from '@gmod/vcf'
-import { bufferToString, ParseOptions } from './ImportUtils'
 import { assembleLocString } from '@jbrowse/core/util'
+import { bufferToString, ParseOptions } from './ImportUtils'
 
 export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
   const { selectedAssemblyName } = options
@@ -45,13 +45,11 @@ export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
 
   return {
     vcfParser,
-    rows: rows.map((row, idx) => {
-      return {
-        ...row,
-        id: idx,
-        __lineData: row,
-      }
-    }),
+    rows: rows.map((row, idx) => ({
+      ...row,
+      id: idx,
+      __lineData: row,
+    })),
     columns: [
       'loc',
       'CHROM',
