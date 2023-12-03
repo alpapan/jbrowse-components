@@ -5,12 +5,8 @@ import { SpreadsheetViewStateModel } from './SpreadsheetView'
 
 const IMPORT_SIZE_LIMIT = 40_000_000
 
-const fileTypes = ['CSV', 'TSV', 'VCF', 'BED', 'BEDPE', 'STAR-Fusion']
+const fileTypes = ['VCF', 'BED', 'BEDPE', 'STAR-Fusion']
 const fileTypeParsers = {
-  CSV: () =>
-    import('../importAdapters/ImportUtils').then(r => r.parseCsvBuffer),
-  TSV: () =>
-    import('../importAdapters/ImportUtils').then(r => r.parseTsvBuffer),
   VCF: () => import('../importAdapters/VcfImport').then(r => r.parseVcfBuffer),
   BED: () => import('../importAdapters/BedImport').then(r => r.parseBedBuffer),
   BEDPE: () =>
@@ -35,7 +31,7 @@ function stateModelFactory() {
       /**
        * #property
        */
-      fileType: types.optional(types.enumeration(fileTypes), 'CSV'),
+      fileType: types.optional(types.enumeration(fileTypes), 'VCF'),
       /**
        * #property
        */
@@ -58,12 +54,10 @@ function stateModelFactory() {
     }))
     .views(self => ({
       get isReadyToOpen() {
+        const { error, fileSource } = self
         return (
-          !self.error &&
-          self.fileSource &&
-          (self.fileSource.blobId ||
-            self.fileSource.localPath ||
-            self.fileSource.uri)
+          !error &&
+          (fileSource?.blobId || fileSource?.localPath || fileSource?.uri)
         )
       },
       get canCancel() {
@@ -72,11 +66,12 @@ function stateModelFactory() {
       },
 
       get fileName() {
-        return (
-          self.fileSource.uri ||
-          self.fileSource.localPath ||
-          (self.fileSource.blobId && self.fileSource.name)
-        )
+        const { fileSource } = self
+        return fileSource
+          ? fileSource.uri ||
+              fileSource.localPath ||
+              (fileSource.blobId && fileSource.name)
+          : undefined
       },
 
       get requiresUnzip() {
@@ -186,7 +181,7 @@ function stateModelFactory() {
           }
           const buffer = await filehandle.readFile()
           const buf2 = self.requiresUnzip ? await unzip(buffer) : buffer
-          const spreadsheet = await typeParser(buf2, self)
+          const spreadsheet = await typeParser(buf2)
           this.setLoaded()
           getParent<SpreadsheetViewStateModel>(self).displaySpreadsheet(
             spreadsheet,

@@ -2,12 +2,13 @@ import VCF from '@gmod/vcf'
 import { assembleLocString } from '@jbrowse/core/util'
 
 // locals
-import { bufferToString, ParseOptions } from './ImportUtils'
-import LocString from './LocString'
+import LocString from './components/LocString'
+import { launchLGV } from './util'
+import { SpreadsheetModel } from '../models/Spreadsheet'
 
-export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
-  const { selectedAssemblyName } = options
-  const { header, body } = splitVcfFileHeaderAndBody(bufferToString(buffer))
+export function parseVcfBuffer(buffer: Buffer) {
+  const str = new TextDecoder('utf8').decode(buffer)
+  const { header, body } = splitVcfFileHeaderAndBody(str)
   const vcfParser = new VCF({ header })
   const lines = body.split(/\n|\r\n/)
 
@@ -65,13 +66,24 @@ export function parseVcfBuffer(buffer: Buffer, options: ParseOptions = {}) {
       'FORMAT',
       ...keys,
     ],
-    assemblyName: selectedAssemblyName,
     CustomComponents: {
       loc: {
         Component: LocString,
         props: {
-          getMenuItems: (row: any[]) => {
-            return [{ label: 'Launch linear genome view', onClick: () => {} }]
+          getMenuItems: (
+            model: SpreadsheetModel,
+            row: Record<string, unknown>,
+          ) => {
+            return [
+              {
+                label: 'Launch linear genome view',
+                onClick: () => launchLGV({ model, value: row.loc as string }),
+              },
+              {
+                label: 'Launch breakpoint split view',
+                onClick: () => launchBreakpointSplitView({ model, row }),
+              },
+            ]
           },
         },
       },

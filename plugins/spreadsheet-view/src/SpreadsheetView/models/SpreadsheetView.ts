@@ -14,6 +14,7 @@ const defaultHeight = 440
 /**
  * #stateModel SpreadsheetView
  * #category view
+ *
  * extends
  * - [BaseViewModel](../baseviewmodel)
  */
@@ -42,7 +43,6 @@ function stateModelFactory() {
          * #property
          */
         hideVerticalResizeHandle: false,
-
         /**
          * #property
          */

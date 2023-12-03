@@ -1,12 +1,11 @@
 import { assembleLocString } from '@jbrowse/core/util'
-import { ParseOptions } from './ImportUtils'
 import { parseStrand } from './util'
-import LocString from './LocString'
+import LocString from './components/LocString'
 
 const MAX_SET_SCAN = 100
 const MAX_BED_COL = 6
 
-export async function parseBedBuffer(buffer: Buffer, options: ParseOptions) {
+export async function parseBedBuffer(buffer: Buffer) {
   const data = new TextDecoder('utf8', { fatal: true }).decode(buffer)
   const lines = data.split(/\n|\r\n|\r/).filter(f => !!f)
   const headerLines = []

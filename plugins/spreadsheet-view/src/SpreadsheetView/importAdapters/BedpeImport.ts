@@ -1,10 +1,9 @@
-import { ParseOptions } from './ImportUtils'
 import { parseStrand } from './util'
 
 const MAX_SET_SCAN = 100
-
 const MAX_BEDPE_COL = 10
-export async function parseBedPEBuffer(buffer: Buffer, options: ParseOptions) {
+
+export async function parseBedPEBuffer(buffer: Buffer) {
   const data = new TextDecoder('utf8', { fatal: true }).decode(buffer)
   const lines = data.split(/\n|\r\n|\r/).filter(f => !!f)
   const headerLines = []

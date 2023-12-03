@@ -34,7 +34,7 @@ const ErrorMessage = ({
   clearError,
 }: {
   error: unknown
-  clearError: () => void
+  clearError?: () => void
 }) => {
   const str = `${error}`
   const snapshotError = parseError(str)

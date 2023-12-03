@@ -60,14 +60,7 @@ function SvInspectorViewF(pluginManager: PluginManager) {
         /**
          * #property
          */
-        height: types.optional(
-          types.refinement(
-            'SvInspectorViewHeight',
-            types.number,
-            n => n >= minHeight,
-          ),
-          defaultHeight,
-        ),
+        height: types.optional(types.number, defaultHeight),
         /**
          * #property
          */
@@ -125,6 +118,7 @@ function SvInspectorViewF(pluginManager: PluginManager) {
        * #getter
        */
       get showCircularView() {
+        // @ts-expect-error
         return self.spreadsheetView.mode === 'display'
       },
 
@@ -132,12 +126,8 @@ function SvInspectorViewF(pluginManager: PluginManager) {
        * #getter
        */
       get features() {
-        const session = getSession(self)
-        const { spreadsheetView } = self
-        const { outputRows = [] } = spreadsheetView
-        return outputRows
-          .map((r, i) => getFeatureForRow(session, spreadsheetView, r, i))
-          .filter(f => !!f)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return [] as any[]
       },
       /**
        * #getter
@@ -200,13 +190,13 @@ function SvInspectorViewF(pluginManager: PluginManager) {
        * #action
        */
       setImportMode() {
-        self.spreadsheetView.setImportMode()
+        // self.spreadsheetView.setImportMode()
       },
       /**
        * #action
        */
       setDisplayMode() {
-        self.spreadsheetView.setDisplayMode()
+        // self.spreadsheetView.setDisplayMode()
       },
       /**
        * #action
@@ -368,38 +358,37 @@ function SvInspectorViewF(pluginManager: PluginManager) {
         addDisposer(
           self,
           autorun(() => {
-            self.spreadsheetView.setRowMenuItems(
-              // these are the MenuItem entries for the row menu actions in the
-              // spreadsheet view.  these are installed into the child
-              // SpreadsheetView using an autorun below
-              [
-                {
-                  label: 'Open split detail view',
-                  icon: OpenInNewIcon,
-                  // @ts-expect-error
-                  disabled(spreadsheetView, spreadsheet, rowNumber, row) {
-                    return !canOpenBreakpointSplitViewFromTableRow(
-                      self,
-                      spreadsheetView,
-                      spreadsheet,
-                      row,
-                      rowNumber,
-                    )
-                  },
-
-                  // @ts-expect-error
-                  onClick(spreadsheetView, spreadsheet, rowNumber, row) {
-                    openBreakpointSplitViewFromTableRow(
-                      self,
-                      spreadsheetView,
-                      spreadsheet,
-                      row,
-                      rowNumber,
-                    )
-                  },
-                },
-              ],
-            )
+            // self.spreadsheetView.setRowMenuItems(
+            //   // these are the MenuItem entries for the row menu actions in the
+            //   // spreadsheet view.  these are installed into the child
+            //   // SpreadsheetView using an autorun below
+            //   [
+            //     {
+            //       label: 'Open split detail view',
+            //       icon: OpenInNewIcon,
+            //       // @ts-expect-error
+            //       disabled(spreadsheetView, spreadsheet, rowNumber, row) {
+            //         return !canOpenBreakpointSplitViewFromTableRow(
+            //           self,
+            //           spreadsheetView,
+            //           spreadsheet,
+            //           row,
+            //           rowNumber,
+            //         )
+            //       },
+            //       // @ts-expect-error
+            //       onClick(spreadsheetView, spreadsheet, rowNumber, row) {
+            //         openBreakpointSplitViewFromTableRow(
+            //           self,
+            //           spreadsheetView,
+            //           spreadsheet,
+            //           row,
+            //           rowNumber,
+            //         )
+            //       },
+            //     },
+            //   ],
+            // )
           }),
         )
       },
