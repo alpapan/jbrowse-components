@@ -1,5 +1,5 @@
 import React from 'react'
-import { getSession } from '@jbrowse/core/util'
+import { getSession, measureGridWidth } from '@jbrowse/core/util'
 import { autorun } from 'mobx'
 import { addDisposer, types, Instance } from 'mobx-state-tree'
 
@@ -32,6 +32,8 @@ function stateModelFactory() {
     })
     .volatile(() => ({
       data: undefined as SpreadsheetData | undefined,
+      visible: {} as Record<string, boolean>,
+      widths: {} as Record<string, number>,
     }))
     .views(self => ({
       /**
@@ -47,9 +49,54 @@ function stateModelFactory() {
       /**
        * #action
        */
+      setVisible(args: Record<string, boolean>) {
+        self.visible = args
+      },
+      /**
+       * #action
+       */
       setData(data?: SpreadsheetData, assemblyName?: string) {
         self.data = data
         self.assemblyName = assemblyName
+      },
+      /**
+       * #action
+       */
+      setWidths(w: Record<string, number>) {
+        self.widths = w
+      },
+    }))
+    .views(self => ({
+      /**
+       * #getter
+       */
+      get columns() {
+        if (self.data) {
+          const { CustomComponents } = self.data
+          return self.data?.columns.map(m => {
+            const res = CustomComponents?.[m]
+            return {
+              field: m,
+              width: self.widths[m],
+              renderCell: res
+                ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  (args: { value: string; row: any[] }) => (
+                    <res.Component
+                      value={args.value}
+                      model={self}
+                      row={args.row}
+                      {...res.props}
+                    />
+                  )
+                : undefined,
+            }
+          })
+        }
+        return undefined
+      },
+
+      get widthList() {
+        return Object.values(self.widths).map(f => f ?? 100)
       },
     }))
 
@@ -70,6 +117,30 @@ function stateModelFactory() {
                 `failed to load assembly ${self.assemblyName} ${error}`,
                 'error',
               )
+            }
+          }),
+        )
+        addDisposer(
+          self,
+          autorun(() => {
+            if (self.data) {
+              self.setVisible(
+                Object.fromEntries(self.data.columns.map(c => [c, true])),
+              )
+            }
+          }),
+        )
+        addDisposer(
+          self,
+          autorun(() => {
+            if (self.data) {
+              const { rows, columns } = self.data
+              const widths = Object.fromEntries(
+                columns
+                  .filter(f => self.visible[f])
+                  .map(e => [e, measureGridWidth(rows.map(r => r[e]))]),
+              )
+              self.setWidths(widths)
             }
           }),
         )
