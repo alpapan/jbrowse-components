@@ -3,57 +3,62 @@ import { assembleLocString } from '@jbrowse/core/util'
 
 // locals
 import LocString from './components/LocString'
-import { launchLGV } from './util'
+import { launchBreakpointSplitView, launchLGV } from './util'
 import { SpreadsheetModel } from '../models/Spreadsheet'
+
+type Row = Record<string, unknown>
 
 export function parseVcfBuffer(buffer: Buffer) {
   const str = new TextDecoder('utf8').decode(buffer)
-  const { header, body } = splitVcfFileHeaderAndBody(str)
-  const vcfParser = new VCF({ header })
-  const lines = body.split(/\n|\r\n/)
-
-  const keys = new Set<string>()
-  const rows = lines
+  const lines = str
+    .split(/\n|\r\n/)
+    .map(f => f.trim())
     .filter(f => !!f)
-    .map(l => {
-      const [CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT] =
-        l.split('\t')
-      const ret = Object.fromEntries(
-        INFO?.split(';').map(e => {
-          const [key, val = true] = e.split('=')
-          const k = `INFO.${key}`
+  const headerLines = []
+  let i = 0
+  for (; i < lines.length && lines[i].startsWith('#'); i++) {
+    headerLines.push(lines[i])
+  }
+  const header = headerLines.join('\n')
+  const vcfParser = new VCF({ header })
+  const keys = new Set<string>()
+  const rows = lines.slice(i).map((l, id) => {
+    const [CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMAT] = l.split('\t')
+    const ret = Object.fromEntries(
+      INFO?.split(';')
+        .map(f => f.trim())
+        .map(e => {
+          const [key, val = 'true'] = e.split('=')
+          const k = `INFO.${key.trim()}`
           keys.add(k)
-          return [k, val]
+          return [k, val.trim()]
         }) || [],
-      )
-      const start = +POS
-      const s1 = start + 1
-      return {
-        loc: assembleLocString({
-          refName: CHROM,
-          start,
-          end: ret['INFO.CHR2'] ? s1 : +ret['INFO.END'] ?? s1,
-        }),
-        CHROM,
-        POS: start,
-        ID,
-        REF,
-        ALT,
-        QUAL,
-        FILTER,
-        INFO,
-        FORMAT,
-        ...ret,
-      }
-    })
+    )
+    const start = +POS
+    const s1 = start + 1
+    return {
+      loc: assembleLocString({
+        refName: CHROM,
+        start,
+        end: ret['INFO.CHR2'] ? s1 : +ret['INFO.END'] ?? s1,
+      }),
+      CHROM,
+      POS: start,
+      ID,
+      REF,
+      ALT,
+      QUAL,
+      FILTER,
+      FORMAT,
+      id,
+      ___lineData: l,
+      ...ret,
+    }
+  })
 
   return {
     vcfParser,
-    rows: rows.map((row, idx) => ({
-      ...row,
-      id: idx,
-      __lineData: row,
-    })),
+    rows,
     columns: [
       'loc',
       'CHROM',
@@ -70,41 +75,25 @@ export function parseVcfBuffer(buffer: Buffer) {
       loc: {
         Component: LocString,
         props: {
-          getMenuItems: (
-            model: SpreadsheetModel,
-            row: Record<string, unknown>,
-          ) => {
-            return [
-              {
-                label: 'Launch linear genome view',
-                onClick: () => launchLGV({ model, value: row.loc as string }),
-              },
-              {
-                label: 'Launch breakpoint split view',
-                onClick: () => launchBreakpointSplitView({ model, row }),
-              },
-            ]
-          },
+          getMenuItems: ({
+            model,
+            row,
+          }: {
+            model: SpreadsheetModel
+            row: Row
+          }) => [
+            {
+              label: 'Launch linear genome view',
+              onClick: () => launchLGV({ model, value: row.loc as string }),
+            },
+            {
+              label: 'Launch breakpoint split view',
+              onClick: () =>
+                launchBreakpointSplitView({ model, row, vcfParser }),
+            },
+          ],
         },
       },
     },
-  }
-}
-
-export function splitVcfFileHeaderAndBody(wholeFile: string) {
-  // split into header and the rest of the file
-  let headerEndIndex = 0
-  let prevChar
-  for (; headerEndIndex < wholeFile.length; headerEndIndex++) {
-    const c = wholeFile[headerEndIndex]
-    if (prevChar === '\n' && c !== '#') {
-      break
-    }
-    prevChar = c
-  }
-
-  return {
-    header: wholeFile.slice(0, Math.max(0, headerEndIndex)),
-    body: wholeFile.slice(headerEndIndex),
   }
 }

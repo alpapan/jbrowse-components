@@ -71,28 +71,31 @@ function stateModelFactory() {
        * #getter
        */
       get columns() {
-        if (self.data) {
-          const { CustomComponents } = self.data
-          return self.data?.columns.map(m => {
-            const res = CustomComponents?.[m]
-            return {
-              field: m,
-              width: self.widths[m],
-              renderCell: res
-                ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  (args: { value: string; row: any[] }) => (
-                    <res.Component
-                      value={args.value}
-                      model={self}
-                      row={args.row}
-                      {...res.props}
-                    />
-                  )
-                : undefined,
-            }
-          })
-        }
-        return undefined
+        const { data, widths } = self
+        return data?.columns.map(m => {
+          const res = data.CustomComponents?.[m]
+          console.log({ self })
+          return {
+            field: m,
+            width: widths[m],
+            renderCell: res
+              ? ({
+                  value,
+                  row,
+                }: {
+                  value: string
+                  row: Record<string, unknown>
+                }) => (
+                  <res.Component
+                    value={value}
+                    model={self}
+                    row={row}
+                    {...res.props}
+                  />
+                )
+              : undefined,
+          }
+        })
       },
 
       get widthList() {
@@ -102,24 +105,6 @@ function stateModelFactory() {
 
     .actions(self => ({
       afterAttach() {
-        addDisposer(
-          self,
-          autorun(async () => {
-            const session = getSession(self)
-            const { assemblyManager } = session
-            try {
-              if (self.assemblyName) {
-                await assemblyManager.waitForAssembly(self.assemblyName)
-              }
-            } catch (error) {
-              console.error(error)
-              session.notify(
-                `failed to load assembly ${self.assemblyName} ${error}`,
-                'error',
-              )
-            }
-          }),
-        )
         addDisposer(
           self,
           autorun(() => {

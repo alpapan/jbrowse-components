@@ -11,15 +11,15 @@ import { SpreadsheetViewStateModel } from '@jbrowse/plugin-spreadsheet-view'
 import { CircularViewStateModel } from '@jbrowse/plugin-circular-view'
 
 // icons
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+// import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import FolderOpenIcon from '@mui/icons-material/FolderOpen'
 
 // locals
-import {
-  canOpenBreakpointSplitViewFromTableRow,
-  openBreakpointSplitViewFromTableRow,
-  getFeatureForRow,
-} from './breakpointSplitViewFromTableRow'
+// import {
+//   canOpenBreakpointSplitViewFromTableRow,
+//   openBreakpointSplitViewFromTableRow,
+//   getFeatureForRow,
+// } from './breakpointSplitViewFromTableRow'
 
 /**
  * #stateModel SvInspectorView

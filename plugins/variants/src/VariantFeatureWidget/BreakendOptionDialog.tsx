@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 import { observer } from 'mobx-react'
 import {
@@ -9,15 +8,71 @@ import {
   FormControlLabel,
 } from '@mui/material'
 import { makeStyles } from 'tss-react/mui'
-import { getSnapshot } from 'mobx-state-tree'
+import { IAnyStateTreeNode, getSnapshot } from 'mobx-state-tree'
 import { Dialog } from '@jbrowse/core/ui'
 import { getSession, Feature } from '@jbrowse/core/util'
+import BreakpointSplitViewType from '@jbrowse/plugin-breakpoint-split-view/src/BreakpointSplitView/BreakpointSplitView'
 
 const useStyles = makeStyles()({
   block: {
     display: 'block',
   },
 })
+interface AbstractView {
+  tracks: IAnyStateTreeNode
+  width: number
+  assemblyNames: string[]
+}
+
+async function launchBreakpointSplitView({
+  model,
+  feature,
+  viewType,
+  mirrorTracks,
+}: {
+  feature: Feature
+  model: { view: AbstractView }
+  viewType: BreakpointSplitViewType
+  mirrorTracks: boolean
+}) {
+  const { view } = model
+  const session = getSession(model)
+  try {
+    const [assemblyName] = view.assemblyNames
+    const viewSnapshot = await viewType.snapshotFromBreakendFeature(
+      feature,
+      assemblyName,
+      session,
+    )
+
+    interface Track {
+      trackId: string
+      [key: string]: unknown
+    }
+    function remapIds(arr: Track[]) {
+      return arr.map(v => ({
+        ...v,
+        id: `${v.trackId}-${Math.random()}`,
+      }))
+    }
+    viewSnapshot.views[0].offsetPx -= view.width / 2 + 100
+    viewSnapshot.views[1].offsetPx -= view.width / 2 + 100
+    viewSnapshot.featureData = feature
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const viewTracks = getSnapshot(view.tracks) as Track[]
+    // @ts-expect-error
+    viewSnapshot.views[0].tracks = remapIds(viewTracks)
+    // @ts-expect-error
+    viewSnapshot.views[1].tracks = remapIds(
+      mirrorTracks ? [...viewTracks].reverse() : viewTracks,
+    )
+
+    session.addView('BreakpointSplitView', viewSnapshot)
+  } catch (e) {
+    console.error(e)
+    session.notify(`${e}`, 'error')
+  }
+}
 
 const BreakendOptionDialog = observer(function ({
   model,
@@ -25,10 +80,10 @@ const BreakendOptionDialog = observer(function ({
   feature,
   viewType,
 }: {
-  model: any
+  model: { view: AbstractView }
   handleClose: () => void
   feature: Feature
-  viewType: any
+  viewType: BreakpointSplitViewType
 }) {
   const { classes } = useStyles()
   const [copyTracks, setCopyTracks] = useState(true)
@@ -62,39 +117,14 @@ const BreakendOptionDialog = observer(function ({
       <DialogActions>
         <Button
           onClick={() => {
-            const { view } = model
-            const session = getSession(model)
-            try {
-              const viewSnapshot = viewType.snapshotFromBreakendFeature(
-                feature,
-                view,
-              )
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            launchBreakpointSplitView({
+              feature,
+              model,
+              viewType,
+              mirrorTracks,
+            })
 
-              interface Track {
-                trackId: string
-                [key: string]: unknown
-              }
-              function remapIds(arr: Track[]) {
-                return arr.map(v => ({
-                  ...v,
-                  id: `${v.trackId}-${Math.random()}`,
-                }))
-              }
-              viewSnapshot.views[0].offsetPx -= view.width / 2 + 100
-              viewSnapshot.views[1].offsetPx -= view.width / 2 + 100
-              viewSnapshot.featureData = feature
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-              const viewTracks = getSnapshot(view.tracks) as Track[]
-              viewSnapshot.views[0].tracks = remapIds(viewTracks)
-              viewSnapshot.views[1].tracks = remapIds(
-                mirrorTracks ? [...viewTracks].reverse() : viewTracks,
-              )
-
-              session.addView('BreakpointSplitView', viewSnapshot)
-            } catch (e) {
-              console.error(e)
-              session.notify(`${e}`)
-            }
             handleClose()
           }}
           variant="contained"

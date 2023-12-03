@@ -8,6 +8,7 @@ import {
   SimpleFeatureSerialized,
 } from '@jbrowse/core/util'
 import { BaseCard } from '@jbrowse/core/BaseFeatureWidget/BaseFeatureDetail'
+import BreakpointSplitViewType from '@jbrowse/plugin-breakpoint-split-view/src/BreakpointSplitView/BreakpointSplitView'
 
 // lazies
 const BreakendOptionDialog = lazy(() => import('./BreakendOptionDialog'))
@@ -21,10 +22,12 @@ export default function BreakendPanel(props: {
   const session = getSession(model)
   const { pluginManager } = getEnv(session)
   const [breakpointDialog, setBreakpointDialog] = useState(false)
-  let viewType
+  let viewType: BreakpointSplitViewType | undefined
 
   try {
-    viewType = pluginManager.getViewType('BreakpointSplitView')
+    viewType = pluginManager.getViewType(
+      'BreakpointSplitView',
+    ) as BreakpointSplitViewType
   } catch (e) {
     // ignore
   }

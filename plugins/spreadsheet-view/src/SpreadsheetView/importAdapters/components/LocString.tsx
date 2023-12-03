@@ -19,10 +19,11 @@ export default function LocString({
 }: {
   value: string
   model: SpreadsheetModel
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  row: any[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getMenuItems: (row: any[]) => MenuItem[]
+  row: Record<string, unknown>
+  getMenuItems: (arg: {
+    model: SpreadsheetModel
+    row: Record<string, unknown>
+  }) => MenuItem[]
 }) {
   return (
     <>
@@ -40,7 +41,7 @@ export default function LocString({
       >
         {value}
       </Link>
-      <CascadingMenuButton menuItems={getMenuItems(row)}>
+      <CascadingMenuButton menuItems={getMenuItems({ model, row })}>
         <MoreHoriz />
       </CascadingMenuButton>
     </>
