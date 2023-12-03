@@ -9,6 +9,7 @@ import {
   launchLinearGenomeViewWithEndFocus,
 } from './util'
 import { SpreadsheetModel } from '../models/Spreadsheet'
+import { VcfFeature } from '@jbrowse/plugin-variants'
 
 type Row = Record<string, unknown>
 
@@ -38,16 +39,19 @@ export function parseVcfBuffer(buffer: Buffer) {
           return [k, val.trim()]
         }) || [],
     )
-    const start = +POS
-    const s1 = start + 1
+    const feature = new VcfFeature({
+      parser: vcfParser,
+      variant: vcfParser.parseLine(l),
+      id: `${id}`,
+    })
     return {
       loc: assembleLocString({
-        refName: CHROM,
-        start,
-        end: ret['INFO.CHR2'] ? s1 : +ret['INFO.END'] ?? s1,
+        refName: feature.get('refName'),
+        start: feature.get('start'),
+        end: feature.get('end'),
       }),
       CHROM,
-      POS: start,
+      POS,
       ID,
       REF,
       ALT,
@@ -55,6 +59,11 @@ export function parseVcfBuffer(buffer: Buffer) {
       FILTER,
       FORMAT,
       id,
+      feature: new VcfFeature({
+        parser: vcfParser,
+        variant: vcfParser.parseLine(l),
+        id: `${id}`,
+      }),
       ___lineData: l,
       ...ret,
     }
@@ -87,19 +96,18 @@ export function parseVcfBuffer(buffer: Buffer) {
             row: Row
           }) => [
             {
-              label: 'Launch linear genome view',
+              label: 'Open in linear genome view (whole feature)',
               onClick: () =>
                 launchLinearGenomeView({ model, value: row.loc as string }),
             },
             {
-              label: 'Launch breakpoint split view',
-              onClick: () =>
-                launchBreakpointSplitView({ model, row, vcfParser }),
+              label: 'Open in linear genome view (focused on ends of SV)',
+              onClick: () => launchLinearGenomeViewWithEndFocus({ model, row }),
             },
             {
-              label: 'Launch linear genome view focused on ends of SV',
+              label: 'Open in breakpoint split view',
               onClick: () =>
-                launchLinearGenomeViewWithEndFocus({ model, row, vcfParser }),
+                launchBreakpointSplitView({ model, row, vcfParser }),
             },
           ],
         },

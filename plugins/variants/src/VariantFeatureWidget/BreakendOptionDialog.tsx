@@ -11,7 +11,6 @@ import { makeStyles } from 'tss-react/mui'
 import { IAnyStateTreeNode, getSnapshot } from 'mobx-state-tree'
 import { Dialog } from '@jbrowse/core/ui'
 import { getSession, Feature } from '@jbrowse/core/util'
-import BreakpointSplitViewType from '@jbrowse/plugin-breakpoint-split-view/src/BreakpointSplitView/BreakpointSplitView'
 
 const useStyles = makeStyles()({
   block: {
@@ -24,16 +23,27 @@ interface AbstractView {
   assemblyNames: string[]
 }
 
+interface AbstractTrack {
+  trackId: string
+  [key: string]: unknown
+}
+function remapIds(arr: AbstractTrack[]) {
+  return arr.map(v => ({
+    ...v,
+    id: `${v.trackId}-${Math.random()}`,
+  }))
+}
 async function launchBreakpointSplitView({
   model,
   feature,
-  viewType,
   mirrorTracks,
+  viewType,
 }: {
   feature: Feature
   model: { view: AbstractView }
-  viewType: BreakpointSplitViewType
   mirrorTracks: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  viewType: any
 }) {
   const { view } = model
   const session = getSession(model)
@@ -45,24 +55,12 @@ async function launchBreakpointSplitView({
       session,
     )
 
-    interface Track {
-      trackId: string
-      [key: string]: unknown
-    }
-    function remapIds(arr: Track[]) {
-      return arr.map(v => ({
-        ...v,
-        id: `${v.trackId}-${Math.random()}`,
-      }))
-    }
     viewSnapshot.views[0].offsetPx -= view.width / 2 + 100
     viewSnapshot.views[1].offsetPx -= view.width / 2 + 100
     viewSnapshot.featureData = feature
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    const viewTracks = getSnapshot(view.tracks) as Track[]
-    // @ts-expect-error
+    const viewTracks = getSnapshot(view.tracks) as AbstractTrack[]
     viewSnapshot.views[0].tracks = remapIds(viewTracks)
-    // @ts-expect-error
     viewSnapshot.views[1].tracks = remapIds(
       mirrorTracks ? [...viewTracks].reverse() : viewTracks,
     )
@@ -83,7 +81,8 @@ const BreakendOptionDialog = observer(function ({
   model: { view: AbstractView }
   handleClose: () => void
   feature: Feature
-  viewType: BreakpointSplitViewType
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  viewType: any
 }) {
   const { classes } = useStyles()
   const [copyTracks, setCopyTracks] = useState(true)
@@ -121,8 +120,8 @@ const BreakendOptionDialog = observer(function ({
             launchBreakpointSplitView({
               feature,
               model,
-              viewType,
               mirrorTracks,
+              viewType,
             })
 
             handleClose()

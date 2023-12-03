@@ -1,10 +1,16 @@
-import { getEnv, getSession } from '@jbrowse/core/util'
+import {
+  Feature,
+  assembleLocString,
+  getEnv,
+  getSession,
+} from '@jbrowse/core/util'
+import { getParent } from 'mobx-state-tree'
+import { VcfFeature } from '@jbrowse/plugin-variants'
+import VCF, { parseBreakend } from '@gmod/vcf'
+
+// locals
 import { locationLinkClick } from '../components/util'
 import { SpreadsheetModel } from '../models/Spreadsheet'
-import { getParent } from 'mobx-state-tree'
-import VCF from '@gmod/vcf'
-import { VcfFeature } from '@jbrowse/plugin-variants'
-import BreakpointSplitViewType from '@jbrowse/plugin-breakpoint-split-view/src/BreakpointSplitView/BreakpointSplitView'
 
 export function parseStrand(strand: string) {
   if (strand === '+') {
@@ -49,16 +55,16 @@ export async function launchBreakpointSplitView({
     if (!assemblyName) {
       throw new Error('assemblyName not set')
     }
-    const viewType = pluginManager.getViewType(
-      'BreakpointSplitView',
-    ) as BreakpointSplitViewType
+    const viewType = pluginManager.getViewType('BreakpointSplitView')
+    const feat = new VcfFeature({
+      id: row.id as string,
+      // eslint-disable-next-line no-underscore-dangle
+      variant: vcfParser.parseLine(row.___lineData as string),
+      parser: vcfParser,
+    })
+    // @ts-expect-error
     const snap = await viewType.snapshotFromBreakendFeature(
-      new VcfFeature({
-        id: row.id as string,
-        // eslint-disable-next-line no-underscore-dangle
-        variant: vcfParser.parseLine(row.___lineData as string),
-        parser: vcfParser,
-      }),
+      feat,
       assemblyName,
       session,
     )
@@ -73,15 +79,55 @@ export async function launchBreakpointSplitView({
   }
 }
 
+function getBreakpoints(feature: Feature) {
+  const alt = feature.get('ALT')?.[0]
+
+  const bnd = alt ? parseBreakend(alt) : undefined
+  let endPos
+  let mateRefName: string | undefined
+
+  // a VCF breakend feature
+  if (alt === '<TRA>') {
+    const INFO = feature.get('INFO')
+    endPos = INFO.END[0] - 1
+    mateRefName = INFO.CHR2[0]
+  } else if (bnd?.MatePosition) {
+    const matePosition = bnd.MatePosition.split(':')
+    endPos = +matePosition[1] - 1
+    mateRefName = matePosition[0]
+  } else if (feature.get('mate')) {
+    const mate = feature.get('mate')
+    mateRefName = mate.refName
+    endPos = mate.start
+  }
+
+  return [
+    {
+      refName: feature.get('refName'),
+      start: feature.get('start') - 1000,
+      end: feature.get('end') + 1000,
+    },
+    {
+      refName: mateRefName!,
+      start: endPos - 1000,
+      end: endPos + 1000,
+    },
+  ] as const
+}
 export async function launchLinearGenomeViewWithEndFocus({
   model,
-  value,
+  row,
 }: {
   model: SpreadsheetModel
-  value: string
+  row: Record<string, unknown>
 }) {
   try {
-    await locationLinkClick(model, value)
+    const { feature } = row
+    const [s1, s2] = getBreakpoints(feature as Feature)
+    await locationLinkClick(
+      model,
+      `${assembleLocString(s1)} ${assembleLocString(s2)}`,
+    )
   } catch (e) {
     console.error(e)
     getSession(model).notify(`${e}`, 'error')

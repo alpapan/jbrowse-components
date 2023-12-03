@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { Suspense, lazy, useState } from 'react'
 import { Link, Typography } from '@mui/material'
 import {
@@ -8,31 +7,42 @@ import {
   SimpleFeatureSerialized,
 } from '@jbrowse/core/util'
 import { BaseCard } from '@jbrowse/core/BaseFeatureWidget/BaseFeatureDetail'
-import BreakpointSplitViewType from '@jbrowse/plugin-breakpoint-split-view/src/BreakpointSplitView/BreakpointSplitView'
+import { IAnyStateTreeNode } from 'mobx-state-tree'
 
 // lazies
 const BreakendOptionDialog = lazy(() => import('./BreakendOptionDialog'))
 
 export default function BreakendPanel(props: {
   locStrings: string[]
-  model: any
+  model: IAnyStateTreeNode
   feature: SimpleFeatureSerialized
 }) {
   const { model, locStrings, feature } = props
-  const session = getSession(model)
-  const { pluginManager } = getEnv(session)
-  const [breakpointDialog, setBreakpointDialog] = useState(false)
-  let viewType
 
-  try {
-    viewType = pluginManager.getViewType('BreakpointSplitView')
-  } catch (e) {
-    // ignore
-  }
-
-  const simpleFeature = new SimpleFeature(feature)
   return (
     <BaseCard {...props} title="Breakends">
+      <LaunchLinearGenomeViewFromVariantFeature
+        locStrings={locStrings}
+        model={model}
+      />
+      <LaunchBreakpointSplitViewFromVariantFeature
+        model={model}
+        locStrings={locStrings}
+        feature={feature}
+      />
+    </BaseCard>
+  )
+}
+
+function LaunchLinearGenomeViewFromVariantFeature({
+  locStrings,
+  model,
+}: {
+  locStrings: string[]
+  model: IAnyStateTreeNode
+}) {
+  return (
+    <>
       <Typography>Link to linear view of breakend endpoints</Typography>
       <ul>
         {locStrings.map(locString => (
@@ -52,7 +62,7 @@ export default function BreakendPanel(props: {
                   }
                 } catch (e) {
                   console.error(e)
-                  session.notify(`${e}`)
+                  getSession(model).notify(`${e}`)
                 }
               }}
             >
@@ -61,38 +71,61 @@ export default function BreakendPanel(props: {
           </li>
         ))}
       </ul>
-      {viewType ? (
-        <div>
-          <Typography>
-            Launch split views with breakend source and target
-          </Typography>
-          <ul>
-            {locStrings.map(locString => (
-              <li key={`${JSON.stringify(locString)}`}>
-                <Link
-                  href="#"
-                  onClick={event => {
-                    event.preventDefault()
-                    setBreakpointDialog(true)
-                  }}
-                >
-                  {`${feature.refName}:${feature.start} // ${locString} (split view)`}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          {breakpointDialog ? (
-            <Suspense fallback={null}>
-              <BreakendOptionDialog
-                model={model}
-                feature={simpleFeature}
-                viewType={viewType}
-                handleClose={() => setBreakpointDialog(false)}
-              />
-            </Suspense>
-          ) : null}
-        </div>
-      ) : null}
-    </BaseCard>
+    </>
   )
+}
+
+function LaunchBreakpointSplitViewFromVariantFeature({
+  feature,
+  model,
+  locStrings,
+}: {
+  model: IAnyStateTreeNode
+  feature: SimpleFeatureSerialized
+  locStrings: string[]
+}) {
+  const [breakpointDialog, setBreakpointDialog] = useState(false)
+  const session = getSession(model)
+  const { pluginManager } = getEnv(session)
+  const simpleFeature = new SimpleFeature(feature)
+  let viewType
+
+  try {
+    viewType = pluginManager.getViewType('BreakpointSplitView')
+  } catch (e) {
+    // ignore
+  }
+
+  return viewType ? (
+    <div>
+      <Typography>
+        Launch split views with breakend source and target
+      </Typography>
+      <ul>
+        {locStrings.map(locString => (
+          <li key={`${JSON.stringify(locString)}`}>
+            <Link
+              href="#"
+              onClick={event => {
+                event.preventDefault()
+                setBreakpointDialog(true)
+              }}
+            >
+              {`${feature.refName}:${feature.start} // ${locString} (split view)`}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {breakpointDialog ? (
+        <Suspense fallback={null}>
+          <BreakendOptionDialog
+            model={model}
+            viewType={viewType}
+            feature={simpleFeature}
+            handleClose={() => setBreakpointDialog(false)}
+          />
+        </Suspense>
+      ) : null}
+    </div>
+  ) : null
 }

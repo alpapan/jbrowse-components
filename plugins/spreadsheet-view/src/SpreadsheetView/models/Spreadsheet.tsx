@@ -82,7 +82,7 @@ function stateModelFactory() {
                   value,
                   row,
                 }: {
-                  value: string
+                  value?: string
                   row: Record<string, unknown>
                 }) => (
                   <res.Component

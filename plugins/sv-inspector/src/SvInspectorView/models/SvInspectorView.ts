@@ -77,23 +77,19 @@ function SvInspectorViewF(pluginManager: PluginManager) {
         /**
          * #property
          */
-        spreadsheetView: types.optional(SpreadsheetModel, () =>
-          SpreadsheetModel.create({
-            type: 'SpreadsheetView',
-            hideVerticalResizeHandle: true,
-          }),
-        ),
+        spreadsheetView: types.optional(SpreadsheetModel, {
+          hideVerticalResizeHandle: true,
+          type: 'SpreadsheetView',
+        }),
         /**
          * #property
          */
-        circularView: types.optional(CircularModel, () =>
-          CircularModel.create({
-            type: 'CircularView',
-            hideVerticalResizeHandle: true,
-            hideTrackSelectorButton: true,
-            disableImportForm: true,
-          }),
-        ),
+        circularView: types.optional(CircularModel, {
+          type: 'CircularView',
+          hideVerticalResizeHandle: true,
+          hideTrackSelectorButton: true,
+          disableImportForm: true,
+        }),
       }),
     )
     .volatile(() => ({
