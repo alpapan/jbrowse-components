@@ -22,12 +22,10 @@ export default function BreakendPanel(props: {
   const session = getSession(model)
   const { pluginManager } = getEnv(session)
   const [breakpointDialog, setBreakpointDialog] = useState(false)
-  let viewType: BreakpointSplitViewType | undefined
+  let viewType
 
   try {
-    viewType = pluginManager.getViewType(
-      'BreakpointSplitView',
-    ) as BreakpointSplitViewType
+    viewType = pluginManager.getViewType('BreakpointSplitView')
   } catch (e) {
     // ignore
   }

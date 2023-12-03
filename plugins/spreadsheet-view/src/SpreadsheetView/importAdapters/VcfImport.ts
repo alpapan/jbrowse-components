@@ -3,7 +3,11 @@ import { assembleLocString } from '@jbrowse/core/util'
 
 // locals
 import LocString from './components/LocString'
-import { launchBreakpointSplitView, launchLGV } from './util'
+import {
+  launchBreakpointSplitView,
+  launchLinearGenomeView,
+  launchLinearGenomeViewWithEndFocus,
+} from './util'
 import { SpreadsheetModel } from '../models/Spreadsheet'
 
 type Row = Record<string, unknown>
@@ -84,12 +88,18 @@ export function parseVcfBuffer(buffer: Buffer) {
           }) => [
             {
               label: 'Launch linear genome view',
-              onClick: () => launchLGV({ model, value: row.loc as string }),
+              onClick: () =>
+                launchLinearGenomeView({ model, value: row.loc as string }),
             },
             {
               label: 'Launch breakpoint split view',
               onClick: () =>
                 launchBreakpointSplitView({ model, row, vcfParser }),
+            },
+            {
+              label: 'Launch linear genome view focused on ends of SV',
+              onClick: () =>
+                launchLinearGenomeViewWithEndFocus({ model, row, vcfParser }),
             },
           ],
         },

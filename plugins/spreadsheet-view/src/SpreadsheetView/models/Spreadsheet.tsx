@@ -74,7 +74,6 @@ function stateModelFactory() {
         const { data, widths } = self
         return data?.columns.map(m => {
           const res = data.CustomComponents?.[m]
-          console.log({ self })
           return {
             field: m,
             width: widths[m],

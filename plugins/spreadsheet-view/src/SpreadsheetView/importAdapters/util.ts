@@ -18,7 +18,7 @@ export function parseStrand(strand: string) {
   }
 }
 
-export async function launchLGV({
+export async function launchLinearGenomeView({
   model,
   value,
 }: {
@@ -62,8 +62,26 @@ export async function launchBreakpointSplitView({
       assemblyName,
       session,
     )
+    const v = getParent<{ width: number }>(model)
+    snap.views[0].offsetPx -= v.width / 2 + 100
+    snap.views[1].offsetPx -= v.width / 2 + 100
 
     session.addView('BreakpointSplitView', snap)
+  } catch (e) {
+    console.error(e)
+    getSession(model).notify(`${e}`, 'error')
+  }
+}
+
+export async function launchLinearGenomeViewWithEndFocus({
+  model,
+  value,
+}: {
+  model: SpreadsheetModel
+  value: string
+}) {
+  try {
+    await locationLinkClick(model, value)
   } catch (e) {
     console.error(e)
     getSession(model).notify(`${e}`, 'error')

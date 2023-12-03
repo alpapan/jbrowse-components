@@ -80,13 +80,14 @@ const Translocations = observer(function ({
           const end2 = info.END[0]
           const [myDirection, mateDirection] = info.STRANDS[0].split('')
 
-          const r = getPxFromCoordinate(views[level2], chr2, end2)
+          const r = getPxFromCoordinate(views[level2], chr2, end2, assembly)
           if (r) {
             const c2: LayoutRecord = [r, 0, r + 1, 0]
             const x1 = getPxFromCoordinate(
               views[level1],
               f1.get('refName'),
               c1[LEFT],
+              assembly,
             )
             const x2 = r
             const reversed1 = views[level1].pxToBp(x1).reversed
@@ -99,21 +100,11 @@ const Translocations = observer(function ({
             const y2 =
               yPos(trackId, level2, views, tracks, c2, getTrackYPosOverride) -
               yOffset
-
-            const path = [
-              'M', // move to
-              x1 - 20 * (myDirection === '+' ? 1 : -1) * (reversed1 ? -1 : 1),
-              y1,
-              'L', // line to
-              x1,
-              y1,
-              'L', // line to
-              x2,
-              y2,
-              'L', // line to
-              x2 - 20 * (mateDirection === '+' ? 1 : -1) * (reversed2 ? -1 : 1),
-              y2,
-            ].join(' ')
+            const foot1 =
+              x1 - 20 * (myDirection === '+' ? 1 : -1) * (reversed1 ? -1 : 1)
+            const foot2 =
+              x2 - 20 * (mateDirection === '+' ? 1 : -1) * (reversed2 ? -1 : 1)
+            const path = `M ${foot1} ${y1} L ${x1} ${y1} L ${x2} ${y2} L ${foot2} ${y2}`
             ret.push(
               <path
                 d={path}
