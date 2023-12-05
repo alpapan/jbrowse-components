@@ -56,6 +56,12 @@ function stateModelFactory() {
       /**
        * #getter
        */
+      get assemblyName() {
+        return self.spreadsheet.assemblyName
+      },
+      /**
+       * #getter
+       */
       get initialized() {
         return self.spreadsheet.initialized
       },

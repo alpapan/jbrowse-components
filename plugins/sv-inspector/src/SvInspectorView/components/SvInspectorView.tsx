@@ -43,11 +43,9 @@ const SvInspectorView = observer(function ({
     CircularViewReactComponent,
     spreadsheetView,
     circularView,
-    showCircularView,
   } = model
   const [initialCircWidth, setInitialCircWidth] = useState(0)
   const [initialSpreadsheetWidth, setInitialSpreadsheetWidth] = useState(0)
-  console.log({ showCircularView })
 
   return (
     <div className={classes.container}>
@@ -59,27 +57,23 @@ const SvInspectorView = observer(function ({
           <SpreadsheetViewReactComponent model={spreadsheetView} />
         </div>
 
-        {showCircularView ? (
-          <>
-            <ResizeHandle
-              onDrag={(_, total) => {
-                circularView.resizeWidth(initialCircWidth - total)
-                spreadsheetView.resizeWidth(initialSpreadsheetWidth + total)
-              }}
-              onMouseDown={() => {
-                setInitialSpreadsheetWidth(spreadsheetView.width)
-                setInitialCircWidth(circularView.width)
-              }}
-              vertical
-              flexbox
-              className={classes.resizeHandleVert}
-            />
-            <div style={{ width: circularView.width }}>
-              <CircularViewOptions svInspector={model} />
-              <CircularViewReactComponent model={circularView} />
-            </div>
-          </>
-        ) : null}
+        <ResizeHandle
+          onDrag={(_, total) => {
+            circularView.setWidth(initialCircWidth + total)
+            spreadsheetView.setWidth(initialSpreadsheetWidth - total)
+          }}
+          onMouseDown={() => {
+            setInitialSpreadsheetWidth(spreadsheetView.width)
+            setInitialCircWidth(circularView.width)
+          }}
+          vertical
+          flexbox
+          className={classes.resizeHandleVert}
+        />
+        <div style={{ width: circularView.width }}>
+          <CircularViewOptions svInspector={model} />
+          <CircularViewReactComponent model={circularView} />
+        </div>
       </div>
       <ResizeHandle
         onDrag={model.resizeHeight}
@@ -89,4 +83,18 @@ const SvInspectorView = observer(function ({
   )
 })
 
-export default SvInspectorView
+const SvInspectorViewContainer = observer(function ({
+  model,
+}: {
+  model: SvInspectorViewModel
+}) {
+  const { SpreadsheetViewReactComponent, initialized, spreadsheetView } = model
+
+  return !initialized ? (
+    <SpreadsheetViewReactComponent model={spreadsheetView} />
+  ) : (
+    <SvInspectorView model={model} />
+  )
+})
+
+export default SvInspectorViewContainer
