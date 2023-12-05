@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react'
 import { makeStyles } from 'tss-react/mui'
 import { ResizeHandle } from '@jbrowse/core/ui'
@@ -41,33 +41,42 @@ const SvInspectorView = observer(function ({
   const {
     SpreadsheetViewReactComponent,
     CircularViewReactComponent,
+    spreadsheetView,
+    circularView,
     showCircularView,
   } = model
+  const [initialCircWidth, setInitialCircWidth] = useState(0)
+  const [initialSpreadsheetWidth, setInitialSpreadsheetWidth] = useState(0)
+  console.log({ showCircularView })
 
   return (
     <div className={classes.container}>
       <div className={classes.viewsContainer}>
         <div
-          style={{ width: model.spreadsheetView.width }}
+          style={{ width: spreadsheetView.width }}
           className={classes.container}
         >
-          <SpreadsheetViewReactComponent model={model.spreadsheetView} />
+          <SpreadsheetViewReactComponent model={spreadsheetView} />
         </div>
 
         {showCircularView ? (
           <>
             <ResizeHandle
-              onDrag={distance => {
-                const ret1 = model.circularView.resizeWidth(-distance)
-                return model.spreadsheetView.resizeWidth(-ret1)
+              onDrag={(_, total) => {
+                circularView.resizeWidth(initialCircWidth - total)
+                spreadsheetView.resizeWidth(initialSpreadsheetWidth + total)
+              }}
+              onMouseDown={() => {
+                setInitialSpreadsheetWidth(spreadsheetView.width)
+                setInitialCircWidth(circularView.width)
               }}
               vertical
               flexbox
               className={classes.resizeHandleVert}
             />
-            <div style={{ width: model.circularView.width }}>
+            <div style={{ width: circularView.width }}>
               <CircularViewOptions svInspector={model} />
-              <CircularViewReactComponent model={model.circularView} />
+              <CircularViewReactComponent model={circularView} />
             </div>
           </>
         ) : null}

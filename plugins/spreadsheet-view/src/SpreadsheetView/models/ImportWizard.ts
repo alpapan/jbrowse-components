@@ -53,6 +53,9 @@ function stateModelFactory() {
       loading: false,
     }))
     .views(self => ({
+      /**
+       * #getter
+       */
       get isReadyToOpen() {
         const { error, fileSource } = self
         return (
@@ -60,11 +63,10 @@ function stateModelFactory() {
           (fileSource?.blobId || fileSource?.localPath || fileSource?.uri)
         )
       },
-      get canCancel() {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return getParent<any>(self).readyToDisplay
-      },
 
+      /**
+       * #getter
+       */
       get fileName() {
         const { fileSource } = self
         return fileSource
@@ -73,11 +75,15 @@ function stateModelFactory() {
               (fileSource.blobId && fileSource.name)
           : undefined
       },
-
+      /**
+       * #getter
+       */
       get requiresUnzip() {
         return this.fileName.endsWith('gz')
       },
-
+      /**
+       * #method
+       */
       isValidRefName(refName: string, assemblyName?: string) {
         const { assemblyManager } = getSession(self)
         if (!assemblyName) {
@@ -87,9 +93,15 @@ function stateModelFactory() {
       },
     }))
     .actions(self => ({
+      /**
+       * #action
+       */
       setSelectedAssemblyName(s: string) {
         self.selectedAssemblyName = s
       },
+      /**
+       * #action
+       */
       setFileSource(newSource: unknown) {
         self.fileSource = newSource
         self.error = undefined
@@ -109,40 +121,32 @@ function stateModelFactory() {
           }
         }
       },
-
-      toggleHasColumnNameLine() {
-        self.hasColumnNameLine = !self.hasColumnNameLine
-      },
-
-      setColumnNameLineNumber(newnumber: number) {
-        if (newnumber > 0) {
-          self.columnNameLineNumber = newnumber
-        }
-      },
-
+      /**
+       * #action
+       */
       setFileType(typeName: string) {
         self.fileType = typeName
       },
-
+      /**
+       * #action
+       */
       setError(error: unknown) {
         console.error(error)
         self.loading = false
         self.error = error
       },
-
+      /**
+       * #action
+       */
       setLoaded() {
         self.loading = false
         self.error = undefined
       },
-
-      cancelButton() {
-        self.error = undefined
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        getParent<any>(self).setDisplayMode()
-      },
-
-      // fetch and parse the file, make a new Spreadsheet model for it,
-      // then set the parent to display it
+      /**
+       * #action
+       * fetch and parse the file, make a new Spreadsheet model for it,
+       * then set the parent to display it
+       */
       async import(assemblyName: string) {
         if (!self.fileSource) {
           return

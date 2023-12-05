@@ -40,9 +40,7 @@ function stateModelFactory() {
        * #getter
        */
       get initialized() {
-        const session = getSession(self)
-        const name = self.assemblyName
-        return name ? session.assemblyManager.get(name)?.initialized : false
+        return !!self.data
       },
     }))
     .actions(self => ({
@@ -96,7 +94,9 @@ function stateModelFactory() {
           }
         })
       },
-
+      /**
+       * #getter
+       */
       get widthList() {
         return Object.values(self.widths).map(f => f ?? 100)
       },

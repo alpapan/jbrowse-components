@@ -114,8 +114,7 @@ function SvInspectorViewF(pluginManager: PluginManager) {
        * #getter
        */
       get showCircularView() {
-        // @ts-expect-error
-        return self.spreadsheetView.mode === 'display'
+        return self.spreadsheetView.initialized
       },
 
       /**

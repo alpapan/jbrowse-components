@@ -97,7 +97,7 @@ const ImportWizard = observer(({ model }: { model: ImportWizardModel }) => {
           >
             Cancel
           </Button>
-        ) : null}{' '}
+        ) : null}
         <Button
           disabled={!!err}
           variant="contained"

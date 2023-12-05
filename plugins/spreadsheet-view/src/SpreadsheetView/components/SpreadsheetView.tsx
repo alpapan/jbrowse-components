@@ -50,8 +50,7 @@ const SpreadsheetContainer = observer(function ({
 }: {
   model: SpreadsheetViewModel
 }) {
-  const { spreadsheet } = model
-  return !spreadsheet.data ? (
+  return !model.initialized ? (
     <Suspense fallback={null}>
       <ImportWizard model={model.importWizard} />
     </Suspense>

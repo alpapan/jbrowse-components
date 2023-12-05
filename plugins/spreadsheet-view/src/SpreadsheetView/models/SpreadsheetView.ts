@@ -34,10 +34,6 @@ function stateModelFactory() {
         /**
          * #property
          */
-        offsetPx: 0,
-        /**
-         * #property
-         */
         height: types.optional(types.number, defaultHeight),
         /**
          * #property
@@ -60,8 +56,14 @@ function stateModelFactory() {
       /**
        * #getter
        */
+      get initialized() {
+        return self.spreadsheet.initialized
+      },
+      /**
+       * #getter
+       */
       get assembly() {
-        const name = self.spreadsheet?.assemblyName
+        const name = self.spreadsheet.assemblyName
         return name ? getSession(self).assemblyManager.get(name) : undefined
       },
     }))
