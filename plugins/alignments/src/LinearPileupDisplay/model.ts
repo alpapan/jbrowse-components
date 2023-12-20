@@ -207,7 +207,9 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
          */
         renderReady() {
           const view = getContainingView(self) as LGV
+          console.log(self.adapterConfig.sequenceAdapter)
           return (
+            self.adapterConfig.sequenceAdapter &&
             self.modificationsReady &&
             self.currSortBpPerPx === view.bpPerPx &&
             superRenderReady()
@@ -338,10 +340,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
             if (!self.autorunReady) {
               return
             }
-
-            const { bpPerPx } = view
-
-            self.setCurrSortBpPerPx(bpPerPx)
+            self.setCurrSortBpPerPx(view.bpPerPx)
           },
           { delay: 1000 },
         )
@@ -362,6 +361,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
               (!sortReady || self.currSortBpPerPx === view.bpPerPx)
             ) {
               const { pos, refName, assemblyName } = sortedBy
+              console.log(adapterConfig)
               // render just the sorted region first
               // @ts-expect-error
               await self.rendererType.renderInClient(rpcManager, {
