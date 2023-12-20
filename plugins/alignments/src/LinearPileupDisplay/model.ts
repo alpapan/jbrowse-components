@@ -177,9 +177,10 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
           trackMaxHeight,
           mismatchAlpha,
           rendererTypeName,
+          rendererType,
         } = self
         const configBlob = getConf(self, ['renderers', rendererTypeName]) || {}
-        return self.rendererType.configSchema.create(
+        return rendererType.configSchema.create(
           {
             ...configBlob,
             ...(featureHeight !== undefined ? { height: featureHeight } : {}),
@@ -207,9 +208,7 @@ function stateModelFactory(configSchema: AnyConfigurationSchemaType) {
          */
         renderReady() {
           const view = getContainingView(self) as LGV
-          console.log(self.adapterConfig.sequenceAdapter)
           return (
-            self.adapterConfig.sequenceAdapter &&
             self.modificationsReady &&
             self.currSortBpPerPx === view.bpPerPx &&
             superRenderReady()
