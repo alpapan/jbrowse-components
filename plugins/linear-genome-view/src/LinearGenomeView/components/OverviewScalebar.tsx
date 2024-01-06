@@ -66,12 +66,10 @@ const useStyles = makeStyles()(theme => ({
   },
   overview: {
     height: HEADER_BAR_HEIGHT,
-    position: 'relative',
   },
   overviewSvg: {
     pointerEvents: 'none',
     width: '100%',
-    position: 'absolute',
   },
 }))
 
