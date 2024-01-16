@@ -9,8 +9,7 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 
 // locals
-import { getAllChildren, treeToMap } from '../util'
-import { NodeData } from './util'
+import { getAllChildren, treeToMap, NodeData } from '../util'
 
 const useStyles = makeStyles()(theme => ({
   contrastColor: {
