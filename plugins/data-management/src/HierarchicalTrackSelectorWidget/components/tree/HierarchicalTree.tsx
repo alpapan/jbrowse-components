@@ -6,7 +6,31 @@ import { getSession } from '@jbrowse/core/util'
 import { TreeNode } from '../../generateHierarchy'
 import { HierarchicalTrackSelectorModel } from '../../model'
 import Node from './TrackListNode'
-import { getNodeData, NodeEntry } from './util'
+
+function getNodeData(
+  node: TreeNode,
+  nestingLevel: number,
+  extra: Record<string, unknown>,
+  selection: Record<string, unknown>,
+) {
+  const isLeaf = node.type === 'track'
+  const selected = isLeaf ? selection[node.trackId] : false
+  return {
+    data: {
+      defaultHeight: isLeaf ? 22 : 40,
+      isLeaf,
+      isOpenByDefault: true,
+      nestingLevel,
+      selected,
+      ...node,
+      ...extra,
+    },
+    nestingLevel,
+    node,
+  }
+}
+
+type NodeData = ReturnType<typeof getNodeData>
 
 // this is the main tree component for the hierarchical track selector in note:
 // in jbrowse-web the toolbar is position="sticky" which means the autosizer
@@ -21,7 +45,7 @@ const HierarchicalTree = observer(function HierarchicalTree({
   model: HierarchicalTrackSelectorModel
 }) {
   const { filterText, selection, view } = model
-  const treeRef = useRef<NodeEntry>(null)
+  const treeRef = useRef<NodeData>(null)
   const session = getSession(model)
   const { drawerPosition } = session
   const obj = useMemo(
@@ -31,7 +55,12 @@ const HierarchicalTree = observer(function HierarchicalTree({
 
   const extra = useMemo(
     () => ({
-      onChange: (trackId: string) => view.toggleTrack(trackId),
+      onChange: (trackId: string) => {
+        const trackTurnedOn = view.toggleTrack(trackId)
+        if (trackTurnedOn) {
+          model.addToRecentlyUsed(trackId)
+        }
+      },
       toggleCollapse: (pathName: string) => model.toggleCategory(pathName),
       tree,
       model,

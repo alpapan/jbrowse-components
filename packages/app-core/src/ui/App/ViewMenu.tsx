@@ -1,12 +1,18 @@
 import React from 'react'
 import {
   SvgIconProps,
+  IconButton,
   IconButtonProps as IconButtonPropsType,
 } from '@mui/material'
 import { observer } from 'mobx-react'
 import { AbstractSessionModel, getSession } from '@jbrowse/core/util'
-import CascadingMenuButton from '@jbrowse/core/ui/CascadingMenuButton'
 import { IBaseViewModel } from '@jbrowse/core/pluggableElementTypes/models'
+import {
+  bindTrigger,
+  bindPopover,
+  usePopupState,
+} from 'material-ui-popup-state/hooks'
+import CascadingMenu from '@jbrowse/core/ui/CascadingMenu'
 
 // icons
 import MenuIcon from '@mui/icons-material/Menu'
@@ -15,6 +21,7 @@ import ArrowUpward from '@mui/icons-material/ArrowUpward'
 
 const ViewMenu = observer(function ({
   model,
+  IconButtonProps,
   IconProps,
 }: {
   model: IBaseViewModel
@@ -26,6 +33,11 @@ const ViewMenu = observer(function ({
     moveViewDown: (arg: string) => void
     moveViewUp: (arg: string) => void
   }
+
+  const popupState = usePopupState({
+    popupId: 'viewMenu',
+    variant: 'popover',
+  })
 
   const items = [
     ...(session.views.length > 1
@@ -47,10 +59,28 @@ const ViewMenu = observer(function ({
     ...((typeof menuItems === 'function' ? menuItems() : menuItems) || []),
   ]
 
-  return items.length ? (
-    <CascadingMenuButton menuItems={items} data-testid="view_menu_icon">
-      <MenuIcon {...IconProps} fontSize="small" />
-    </CascadingMenuButton>
-  ) : null
+  // note: This does not use CascadingMenuButton on purpose, because there was a confusing bug related to it!
+  // see https://github.com/GMOD/jbrowse-components/issues/4115
+  //
+  // Make sure to test the Breakpoint split view menu checkboxes if you intend to change this
+  return (
+    <>
+      <IconButton
+        {...IconButtonProps}
+        {...bindTrigger(popupState)}
+        data-testid="view_menu_icon"
+      >
+        <MenuIcon {...IconProps} fontSize="small" />
+      </IconButton>
+      <CascadingMenu
+        {...bindPopover(popupState)}
+        onMenuItemClick={(_event: unknown, callback: () => void) => {
+          callback()
+        }}
+        menuItems={items}
+        popupState={popupState}
+      />
+    </>
+  )
 })
 export default ViewMenu

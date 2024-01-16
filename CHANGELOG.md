@@ -1,3 +1,174 @@
+yarn run v1.22.19 $ lerna-changelog --silent --silent --next-version 2.10.1
+
+## 2.10.1 (2024-01-09)
+
+#### :rocket: Enhancement
+
+- `core`
+  - [#4155](https://github.com/GMOD/jbrowse-components/pull/4155) Remove
+    react-svg-tooltip library ([@cmdcolin](https://github.com/cmdcolin))
+- Other
+  - [#4152](https://github.com/GMOD/jbrowse-components/pull/4152) Add
+    directional feet to breakends in linear arc display
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4143](https://github.com/GMOD/jbrowse-components/pull/4143) Add webpack
+    build for @jbrowse/react-app ([@cmdcolin](https://github.com/cmdcolin))
+
+#### :bug: Bug Fix
+
+- Other
+  - [#4158](https://github.com/GMOD/jbrowse-components/pull/4158) Fix subfeature
+    refNames on BED and BEDTabix parsers
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4154](https://github.com/GMOD/jbrowse-components/pull/4154) Fix metadata
+    facet filters being blank ([@cmdcolin](https://github.com/cmdcolin))
+- `core`
+  - [#4147](https://github.com/GMOD/jbrowse-components/pull/4147) Fix bad svg
+    output in v2.10.0 in cases where feature names have angle brackets
+    ([@cmdcolin](https://github.com/cmdcolin))
+
+#### :memo: Documentation
+
+- [#4142](https://github.com/GMOD/jbrowse-components/pull/4142) Update
+  03_assemblies.md ([@dtdoering](https://github.com/dtdoering))
+
+#### Committers: 2
+
+- Colin Diesh ([@cmdcolin](https://github.com/cmdcolin))
+- Drew T. Doering ([@dtdoering](https://github.com/dtdoering)) Done in 3.10s.
+
+yarn run v1.22.19 $ lerna-changelog --silent --silent --next-version 2.10.0
+
+## 2.10.0 (2023-12-15)
+
+#### :rocket: Enhancement
+
+- `core`
+  - [#4138](https://github.com/GMOD/jbrowse-components/pull/4138) Speed up large
+    FromConfigAdapter usages with alternative adapter id calculation
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4114](https://github.com/GMOD/jbrowse-components/pull/4114) Improve
+    pluginManager.jexl typescript definition
+    ([@cmdcolin](https://github.com/cmdcolin))
+- Other
+  - [#4135](https://github.com/GMOD/jbrowse-components/pull/4135) Split
+    "recently used tracks" local storage keys by view assemblies
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4003](https://github.com/GMOD/jbrowse-components/pull/4003) Adds the
+    ability to highlight regions using the bookmarks widget
+    ([@carolinebridge-oicr](https://github.com/carolinebridge-oicr))
+  - [#4123](https://github.com/GMOD/jbrowse-components/pull/4123) Remove
+    session.notify after using the Add track workflow
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#3859](https://github.com/GMOD/jbrowse-components/pull/3859) Add new
+    pairwise indexed PAF adapter format with CLI creation workflow
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4109](https://github.com/GMOD/jbrowse-components/pull/4109) Allow right
+    clicking synteny features ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4110](https://github.com/GMOD/jbrowse-components/pull/4110) Scroll both
+    panels of the linear synteny view when side scrolling the middle panel
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4108](https://github.com/GMOD/jbrowse-components/pull/4108) Convert to
+    floating-ui for tooltips for small speedup
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4107](https://github.com/GMOD/jbrowse-components/pull/4107) Refactors and
+    bundle size improvements ([@cmdcolin](https://github.com/cmdcolin))
+- `app-core`, `core`
+  - [#4134](https://github.com/GMOD/jbrowse-components/pull/4134) Add ability to
+    click and drag synteny area of synteny view to side scroll
+    ([@cmdcolin](https://github.com/cmdcolin))
+
+#### :bug: Bug Fix
+
+- Other
+  - [#4137](https://github.com/GMOD/jbrowse-components/pull/4137) Fix dotplot
+    axis ticks going out of bounds ([@cmdcolin](https://github.com/cmdcolin))
+- `core`
+  - [#4136](https://github.com/GMOD/jbrowse-components/pull/4136) Fix "Export
+    SVG" feature in next 14 ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4125](https://github.com/GMOD/jbrowse-components/pull/4125) Fix internet
+    accounts not being shown in file selector after page refresh and hide HTTP
+    basic internet accounts ([@cmdcolin](https://github.com/cmdcolin))
+- `app-core`, `embedded-core`
+  - [#4121](https://github.com/GMOD/jbrowse-components/pull/4121) Fix view menu
+    checkboxes not responding in some cases
+    ([@cmdcolin](https://github.com/cmdcolin))
+
+#### :memo: Documentation
+
+- `app-core`, `product-core`, `web-core`
+  - [#4106](https://github.com/GMOD/jbrowse-components/pull/4106) Add links
+    between autogen docs ([@cmdcolin](https://github.com/cmdcolin))
+
+#### :house: Internal
+
+- [#4103](https://github.com/GMOD/jbrowse-components/pull/4103) Add mastodon
+  account to website links ([@cmdcolin](https://github.com/cmdcolin))
+
+#### Committers: 2
+
+- Caroline Bridge
+  ([@carolinebridge-oicr](https://github.com/carolinebridge-oicr))
+- Colin Diesh ([@cmdcolin](https://github.com/cmdcolin)) Done in 2.06s.
+
+yarn run v1.22.19 $ lerna-changelog --silent --silent --next-version 2.9.0
+
+## 2.9.0 (2023-11-30)
+
+#### :rocket: Enhancement
+
+- Other
+  - [#4070](https://github.com/GMOD/jbrowse-components/pull/4070) Add support
+    for single file hubs ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4096](https://github.com/GMOD/jbrowse-components/pull/4096) Allow
+    searching by gene name using linear synteny view
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4068](https://github.com/GMOD/jbrowse-components/pull/4068) Allow
+    searching the text-index by gene name from the URL bar
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#3948](https://github.com/GMOD/jbrowse-components/pull/3948) Make the
+    default setting for the dotplot/synteny views use 'Existing tracks' by
+    default ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4039](https://github.com/GMOD/jbrowse-components/pull/4039) Adds
+    "Favorites" and "Recently used" track categories to the track selector
+    ([@carolinebridge-oicr](https://github.com/carolinebridge-oicr))
+  - [#4067](https://github.com/GMOD/jbrowse-components/pull/4067) Add arc plugin
+    to @jbrowse/react-linear-genome-view core plugins
+    ([@cmdcolin](https://github.com/cmdcolin))
+- `core`, `product-core`
+  - [#4091](https://github.com/GMOD/jbrowse-components/pull/4091) Allow hiding
+    subfeatures in the feature details panel
+    ([@cmdcolin](https://github.com/cmdcolin))
+
+#### :bug: Bug Fix
+
+- `core`
+  - [#4094](https://github.com/GMOD/jbrowse-components/pull/4094) Refactor
+    faceted track selector to use more MST state
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4086](https://github.com/GMOD/jbrowse-components/pull/4086) Fix issue
+    where --load inPlace and --force can sometimes remove file unexpectedly
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4059](https://github.com/GMOD/jbrowse-components/pull/4059) Fix missing
+    icons on some cascading menus
+    ([@carolinebridge-oicr](https://github.com/carolinebridge-oicr))
+- Other
+  - [#4095](https://github.com/GMOD/jbrowse-components/pull/4095) Fix faceted
+    metadata header names colliding with non-metadata header names
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4071](https://github.com/GMOD/jbrowse-components/pull/4071) Fix Mac
+    auto-updates fetching non-existent zip
+    ([@cmdcolin](https://github.com/cmdcolin))
+  - [#4062](https://github.com/GMOD/jbrowse-components/pull/4062) Fix duplicate
+    key error in hierarchical track selector from using connections
+    ([@cmdcolin](https://github.com/cmdcolin))
+
+#### Committers: 2
+
+- Caroline Bridge
+  ([@carolinebridge-oicr](https://github.com/carolinebridge-oicr))
+- Colin Diesh ([@cmdcolin](https://github.com/cmdcolin)) Done in 1.41s.
+
 yarn run v1.22.19 $ lerna-changelog --silent --next-version 2.8.0
 
 ## 2.8.0 (2023-11-09)

@@ -110,8 +110,8 @@ const DotplotViewInternal = observer(function ({
   const mousedown = getOffset(mousedownClient, svg)
   const mousecurr = getOffset(mousecurrClient, svg)
   const mouseup = getOffset(mouseupClient, svg)
-  const mouserectClient = mouseupClient || mousecurrClient
   const mouserect = mouseup || mousecurr
+  const mouserectClient = mouseupClient || mousecurrClient
   const xdistance = mousedown && mouserect ? mouserect[0] - mousedown[0] : 0
   const ydistance = mousedown && mouserect ? mouserect[1] - mousedown[1] : 0
   const { hview, vview, wheelMode, cursorMode } = model
@@ -191,22 +191,24 @@ const DotplotViewInternal = observer(function ({
     vview,
   ])
 
-  // detect a mouseup after a mousedown was submitted, autoremoves mouseup
-  // once that single mouseup is set
+  // detect a mouseup after a mousedown was submitted, autoremoves mouseup once
+  // that single mouseup is set
   useEffect(() => {
-    function globalMouseUp(event: MouseEvent) {
-      if (Math.abs(xdistance) > 3 && Math.abs(ydistance) > 3 && validSelect) {
-        setMouseUpClient([event.clientX, event.clientY])
-      } else {
-        setMouseDownClient(undefined)
-      }
-    }
-
     if (mousedown && !mouseup) {
+      function globalMouseUp(event: MouseEvent) {
+        if (Math.abs(xdistance) > 3 && Math.abs(ydistance) > 3 && validSelect) {
+          setMouseUpClient([event.clientX, event.clientY])
+        } else {
+          setMouseDownClient(undefined)
+        }
+      }
       window.addEventListener('mouseup', globalMouseUp, true)
-      return () => window.removeEventListener('mouseup', globalMouseUp, true)
+      return () => {
+        window.removeEventListener('mouseup', globalMouseUp, true)
+      }
+    } else {
+      return () => {}
     }
-    return () => {}
   }, [
     validSelect,
     mousedown,
@@ -247,7 +249,6 @@ const DotplotViewInternal = observer(function ({
                 mouserect={mouserect}
                 mouserectClient={mouserectClient}
                 xdistance={xdistance}
-                ydistance={ydistance}
               />
             ) : null}
             {validSelect ? (

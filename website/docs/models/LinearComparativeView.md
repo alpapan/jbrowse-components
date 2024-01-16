@@ -12,6 +12,10 @@ info
 
 [plugins/linear-comparative-view/src/LinearComparativeView/model.ts](https://github.com/GMOD/jbrowse-components/blob/main/plugins/linear-comparative-view/src/LinearComparativeView/model.ts)
 
+extends
+
+- [BaseViewModel](../baseviewmodel)
+
 ### LinearComparativeView - Properties
 
 #### property: id
@@ -230,7 +234,7 @@ activateTrackSelector: () => Widget
 
 ```js
 // type signature
-toggleTrack: (trackId: string) => void
+toggleTrack: (trackId: string) => boolean
 ```
 
 #### action: showTrack

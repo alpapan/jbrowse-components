@@ -12,7 +12,9 @@ info
 
 [plugins/alignments/src/LinearPileupDisplay/model.ts](https://github.com/GMOD/jbrowse-components/blob/main/plugins/alignments/src/LinearPileupDisplay/model.ts)
 
-extends `BaseLinearDisplay`
+extends
+
+- [SharedLinearPileupDisplayMixin](../sharedlinearpileupdisplaymixin)
 
 ### LinearPileupDisplay - Properties
 
@@ -85,14 +87,14 @@ sortedBy: types.maybe(
 any
 ```
 
-#### getter: renderReady
+### LinearPileupDisplay - Methods
+
+#### method: renderReady
 
 ```js
-// type
-;() => boolean
+// type signature
+renderReady: () => boolean
 ```
-
-### LinearPileupDisplay - Methods
 
 #### method: renderPropsPre
 

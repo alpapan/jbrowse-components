@@ -28,13 +28,14 @@ import { renderReactionData, renderReactionEffect } from './renderReaction'
 import {
   CircularViewModel,
   ExportSvgOptions,
-} from '../../CircularView/models/CircularView'
+} from '../../CircularView/models/model'
 import { ThemeOptions } from '@mui/material'
 import { baseChordDisplayConfig } from './configSchema'
 
 /**
  * #stateModel BaseChordDisplay
- * extends `BaseDisplay`
+ * extends
+ * - [BaseDisplay](../basedisplay)
  */
 function x() {} // eslint-disable-line @typescript-eslint/no-unused-vars
 

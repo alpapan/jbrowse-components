@@ -22,8 +22,7 @@ export interface ExportSvgOptions {
   rasterizeLayers?: boolean
   scale?: number
   filename?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Wrapper?: React.FC<any>
+  Wrapper?: React.FC<{ children: React.ReactNode }>
   fontSize?: number
   rulerHeight?: number
   textHeight?: number
@@ -36,7 +35,8 @@ export interface ExportSvgOptions {
 
 /**
  * #stateModel LinearSyntenyView
- * extends the `LinearComparativeView` base model
+ * extends
+ * - [LinearComparativeView](../linearcomparativeview)
  */
 export default function stateModelFactory(pluginManager: PluginManager) {
   return types
@@ -81,6 +81,9 @@ export default function stateModelFactory(pluginManager: PluginManager) {
       },
     }))
     .actions(self => ({
+      /**
+       * #action
+       */
       async exportSvg(opts: ExportSvgOptions) {
         const { renderToSvg } = await import(
           './svgcomponents/SVGLinearSyntenyView'
@@ -148,6 +151,9 @@ export default function stateModelFactory(pluginManager: PluginManager) {
             },
           ]
         },
+        /**
+         * #method
+         */
         menuItems() {
           return [
             ...superMenuItems(),

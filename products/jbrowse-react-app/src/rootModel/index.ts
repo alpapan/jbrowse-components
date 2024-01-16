@@ -52,8 +52,9 @@ type SessionModelFactory = (args: {
  * #stateModel JBrowseReactAppRootModel
  *
  * composed of
- * - BaseRootModelFactory
- * - InternetAccountsMixin
+ * - [BaseRootModel](../baserootmodel)
+ * - [InternetAccountsMixin](../internetaccountsmixin)
+ * - [RootAppMenuMixin](../rootappmenumixin)
  *
  * note: many properties of the root model are available through the session,
  * and we generally prefer using the session model (via e.g. getSession) over
@@ -66,6 +67,7 @@ export default function RootModel({
     throw new Error('no makeWorkerInstance supplied')
   },
   hydrateFn,
+  createRootFn,
 }: {
   pluginManager: PluginManager
   sessionModelFactory: SessionModelFactory
@@ -75,6 +77,9 @@ export default function RootModel({
     initialChildren: React.ReactNode,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) => any
+  createRootFn?: (elt: Element | DocumentFragment) => {
+    render: (node: React.ReactElement) => unknown
+  }
 }) {
   const assemblyConfigSchema = assemblyConfigSchemaFactory(pluginManager)
   return types
@@ -109,6 +114,7 @@ export default function RootModel({
         },
       ),
       hydrateFn,
+      createRootFn,
       textSearchManager: new TextSearchManager(pluginManager),
       error: undefined as unknown,
     }))

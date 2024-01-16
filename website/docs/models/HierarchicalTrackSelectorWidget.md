@@ -79,13 +79,57 @@ view: types.safeReference(
       )
 ```
 
+#### property: faceted
+
+```js
+// type signature
+IOptionalIType<IModelType<{ filterText: IOptionalIType<ISimpleType<string>, [undefined]>; showSparse: IOptionalIType<ISimpleType<boolean>, [undefined]>; showFilters: IOptionalIType<...>; showOptions: IOptionalIType<...>; panelWidth: IOptionalIType<...>; }, { ...; } & ... 4 more ... & { ...; }, _NotCustomized, _NotCu...
+// code
+faceted: types.optional(facetedStateTreeF(), {})
+```
+
 ### HierarchicalTrackSelectorWidget - Getters
+
+#### getter: selectionSet
+
+```js
+// type
+Set<{ [x: string]: any; } & NonEmptyObject & { setSubschema(slotName: string, data: unknown): any; } & IStateTreeNode<AnyConfigurationSchemaType>>
+```
+
+#### getter: favoritesSet
+
+```js
+// type
+Set<string>
+```
+
+#### getter: recentlyUsedSet
+
+```js
+// type
+Set<string>
+```
 
 #### getter: assemblyNames
 
 ```js
 // type
 string[]
+```
+
+#### getter: recentlyUsedLocalStorageKey
+
+```js
+// type
+string
+```
+
+#### getter: favoritesLocalStorageKey
+
+```js
+// type
+string
 ```
 
 #### getter: activeSortTrackNames
@@ -102,7 +146,7 @@ any
 any
 ```
 
-#### getter: trackConfigurations
+#### getter: configAndSessionTrackConfigurations
 
 filter out tracks that don't match the current assembly/display types
 
@@ -111,36 +155,87 @@ filter out tracks that don't match the current assembly/display types
 ({ [x: string]: any; } & NonEmptyObject & { setSubschema(slotName: string, data: unknown): any; } & IStateTreeNode<AnyConfigurationSchemaType>)[]
 ```
 
+#### getter: allTrackConfigurations
+
+```js
+// type
+any[]
+```
+
+#### getter: allTrackConfigurationTrackIdSet
+
+```js
+// type
+Map<unknown, unknown>
+```
+
+#### getter: favoriteTracks
+
+filters out tracks that are not in the favorites group
+
+```js
+// type
+unknown[]
+```
+
+#### getter: recentlyUsedTracks
+
+filters out tracks that are not in the recently used group
+
+```js
+// type
+unknown[]
+```
+
+#### getter: allTracks
+
+```js
+// type
+{ group: any; tracks: ({ [x: string]: any; } & NonEmptyObject & { setSubschema(slotName: string, data: unknown): any; } & IStateTreeNode<AnyConfigurationSchemaType>)[]; noCategories: boolean; menuItems: any[]; }[]
+```
+
 #### getter: hierarchy
 
 ```js
 // type
-{ name: string; id: string; children: { name: any; id: any; children: TreeNode[]; }[]; }
+{ name: string; id: string; isOpenByDefault: boolean; type: "category"; children: { name: any; id: any; type: "category"; isOpenByDefault: boolean; menuItems: any[]; children: TreeNode[]; }[]; }
+```
+
+#### getter: hasAnySubcategories
+
+```js
+// type
+boolean
 ```
 
 ### HierarchicalTrackSelectorWidget - Methods
+
+#### method: isSelected
+
+```js
+// type signature
+isSelected: (track: { [x: string]: any; } & NonEmptyObject & { setSubschema(slotName: string, data: unknown): any; } & IStateTreeNode<AnyConfigurationSchemaType>) => boolean
+```
+
+#### method: isFavorite
+
+```js
+// type signature
+isFavorite: (trackId: string) => boolean
+```
+
+#### method: isRecentlyUsed
+
+```js
+// type signature
+isRecentlyUsed: (trackId: string) => boolean
+```
 
 #### method: getRefSeqTrackConf
 
 ```js
 // type signature
 getRefSeqTrackConf: (assemblyName: string) => { [x: string]: any; } & NonEmptyObject & { setSubschema(slotName: string, data: unknown): any; } & IStateTreeNode<AnyConfigurationSchemaType>
-```
-
-#### method: connectionTrackConfigurations
-
-filter out tracks that don't match the current display types
-
-```js
-// type signature
-connectionTrackConfigurations: (connection: { tracks: ({ [x: string]: any; } & NonEmptyObject & { setSubschema(slotName: string, data: unknown): any; } & IStateTreeNode<AnyConfigurationSchemaType>)[]; }) => ({ ...; } & ... 2 more ... & IStateTreeNode<...>)[]
-```
-
-#### method: connectionHierarchy
-
-```js
-// type signature
-connectionHierarchy: (connection: { name: string; tracks: ({ [x: string]: any; } & NonEmptyObject & { setSubschema(slotName: string, data: unknown): any; } & IStateTreeNode<AnyConfigurationSchemaType>)[]; }) => TreeNode[]
 ```
 
 ### HierarchicalTrackSelectorWidget - Actions
@@ -185,6 +280,69 @@ removeFromSelection: (elt: ({ [x: string]: any; } & NonEmptyObject & { setSubsch
 ```js
 // type signature
 clearSelection: () => void
+```
+
+#### action: addToFavorites
+
+```js
+// type signature
+addToFavorites: (trackId: string) => void
+```
+
+#### action: removeFromFavorites
+
+```js
+// type signature
+removeFromFavorites: (trackId: string) => void
+```
+
+#### action: clearFavorites
+
+```js
+// type signature
+clearFavorites: () => void
+```
+
+#### action: setRecentlyUsedCounter
+
+```js
+// type signature
+setRecentlyUsedCounter: (val: number) => void
+```
+
+#### action: setRecentlyUsed
+
+```js
+// type signature
+setRecentlyUsed: (str: string[]) => void
+```
+
+#### action: setFavorites
+
+```js
+// type signature
+setFavorites: (str: string[]) => void
+```
+
+#### action: setFavoritesCounter
+
+```js
+// type signature
+setFavoritesCounter: (val: number) => void
+```
+
+#### action: addToRecentlyUsed
+
+```js
+// type signature
+addToRecentlyUsed: (id: string) => void
+```
+
+#### action: clearRecentlyUsed
+
+```js
+// type signature
+clearRecentlyUsed: () => void
 ```
 
 #### action: setView

@@ -12,6 +12,10 @@ info
 
 [plugins/linear-genome-view/src/LinearGenomeView/model.ts](https://github.com/GMOD/jbrowse-components/blob/main/plugins/linear-genome-view/src/LinearGenomeView/model.ts)
 
+extends
+
+- [BaseViewModel](../baseviewmodel)
+
 ### LinearGenomeView - Properties
 
 #### property: id
@@ -665,7 +669,7 @@ closeView: () => void
 
 ```js
 // type signature
-toggleTrack: (trackId: string) => void
+toggleTrack: (trackId: string) => boolean
 ```
 
 #### action: setTrackLabels
@@ -799,6 +803,16 @@ wait for assemblies to be initialized
 ```js
 // type signature
 navToLocString: (input: string, optAssemblyName?: string) => Promise<any>
+```
+
+#### action: navToSearchString
+
+Performs a text index search, and navigates to it immediately if a single result
+is returned. Will pop up a search dialog if multiple results are returned
+
+```js
+// type signature
+navToSearchString: ({ input, assembly, }: { input: string; assembly: { configuration: any; } & NonEmptyObject & { error: unknown; loaded: boolean; loadingP: Promise<void>; volatileRegions: BasicRegion[]; refNameAliases: RefNameAliases; lowerCaseRefNameAliases: RefNameAliases; cytobands: Feature[]; } & ... 6 more ... & IStateTreeNode<....
 ```
 
 #### action: navToLocations

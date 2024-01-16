@@ -1,5 +1,5 @@
 import React, { lazy } from 'react'
-import { getConf } from '@jbrowse/core/configuration'
+import { getConf, AnyConfigurationModel } from '@jbrowse/core/configuration'
 import { BaseViewModel } from '@jbrowse/core/pluggableElementTypes/models'
 import { Region } from '@jbrowse/core/util/types'
 import { ElementId, Region as MUIRegion } from '@jbrowse/core/util/types/mst'
@@ -29,11 +29,13 @@ import {
   showTrackGeneric,
   toggleTrackGeneric,
 } from '@jbrowse/core/util/tracks'
-import { when, autorun } from 'mobx'
+import { when, transaction, autorun } from 'mobx'
 import {
   addDisposer,
   cast,
   getSnapshot,
+  getRoot,
+  resolveIdentifier,
   types,
   Instance,
 } from 'mobx-state-tree'
@@ -57,6 +59,8 @@ import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import MiniControls from './components/MiniControls'
 import Header from './components/Header'
 import { generateLocations, parseLocStrings } from './util'
+import { Assembly } from '@jbrowse/core/assemblyManager/assembly'
+import { handleSelectedRegion } from '../searchUtils'
 // lazies
 const ReturnToImportFormDialog = lazy(
   () => import('@jbrowse/core/ui/ReturnToImportFormDialog'),
@@ -84,8 +88,7 @@ export interface BpOffset {
 export interface ExportSvgOptions {
   rasterizeLayers?: boolean
   filename?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Wrapper?: React.FC<any>
+  Wrapper?: React.FC<{ children: React.ReactNode }>
   fontSize?: number
   rulerHeight?: number
   textHeight?: number
@@ -132,6 +135,9 @@ export const WIDGET_HEIGHT = 32
 /**
  * #stateModel LinearGenomeView
  * #category view
+ *
+ * extends
+ * - [BaseViewModel](../baseviewmodel)
  */
 export function stateModelFactory(pluginManager: PluginManager) {
   return types
@@ -1273,6 +1279,26 @@ export function stateModelFactory(pluginManager: PluginManager) {
           parseLocStrings(input, assemblyName, isValidRefName),
           assemblyName,
         )
+      },
+
+      /**
+       * #action
+       * Performs a text index search, and navigates to it immediately if a
+       * single result is returned. Will pop up a search dialog if multiple
+       * results are returned
+       */
+      async navToSearchString({
+        input,
+        assembly,
+      }: {
+        input: string
+        assembly: Assembly
+      }) {
+        await handleSelectedRegion({
+          input,
+          assembly,
+          model: self as LinearGenomeViewModel,
+        })
       },
 
       /**
