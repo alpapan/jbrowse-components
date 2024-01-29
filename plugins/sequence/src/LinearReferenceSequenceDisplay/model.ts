@@ -47,16 +47,21 @@ export function modelFactory(configSchema: AnyConfigurationSchemaType) {
     .views(self => {
       const { renderProps: superRenderProps } = self
       return {
+        get rowHeight() {
+          return 20
+        },
         /**
          * #method
          */
         renderProps() {
           const { showForward, rpcDriverName, showReverse, showTranslation } =
             self
+          const { rowHeight } = this
           return {
             ...superRenderProps(),
             config: self.configuration.renderer,
             rpcDriverName,
+            rowHeight,
             showForward,
             showReverse,
             showTranslation,
@@ -70,7 +75,7 @@ export function modelFactory(configSchema: AnyConfigurationSchemaType) {
        */
       regionCannotBeRendered(/* region */) {
         const view = getContainingView(self) as LGV
-        return view?.bpPerPx >= 1 ? 'Zoom in to see sequence' : undefined
+        return view?.bpPerPx > 3 ? 'Zoom in to see sequence' : undefined
       },
       /**
        * #getter
@@ -103,15 +108,16 @@ export function modelFactory(configSchema: AnyConfigurationSchemaType) {
           self,
           autorun(() => {
             const view = getContainingView(self) as LGV
-            if (view?.bpPerPx >= 1) {
+            if (view?.bpPerPx > 3) {
               self.setHeight(50)
             } else {
+              const { rowHeight } = self
               const { showTranslation, showReverse, showForward } = self
-              const r1 = showReverse && showTranslation ? 60 : 0
-              const r2 = showForward && showTranslation ? 60 : 0
+              const r1 = showReverse && showTranslation ? rowHeight * 3 : 0
+              const r2 = showForward && showTranslation ? rowHeight * 3 : 0
               const t = r1 + r2
-              const r = showReverse ? 20 : 0
-              const s = showForward ? 20 : 0
+              const r = showReverse && view?.bpPerPx <= 1 ? rowHeight : 0
+              const s = showForward && view?.bpPerPx <= 1 ? rowHeight : 0
               self.setHeight(t + r + s)
             }
           }),

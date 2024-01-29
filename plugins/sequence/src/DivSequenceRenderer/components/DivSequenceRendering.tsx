@@ -64,13 +64,23 @@ function Translation(props: {
   const startOffset = (region.start - seqStart) / bpPerPx
   const offset = frameOffset - startOffset
 
+  const defaultFill = theme?.palette.frames.at(frame)?.main
   return (
     <>
+      <rect x={0} y={y} width={width} height={height} fill={defaultFill} />
       {translated.map((element, index) => {
         const x = region.reversed
           ? width - (index + 1) * codonWidth - offset
           : codonWidth * index + offset
         const { letter, codon } = element
+        const codonFill = defaultStarts.includes(codon)
+          ? theme?.palette.startCodon
+          : defaultStops.includes(codon)
+            ? theme?.palette.stopCodon
+            : undefined
+        if (!(renderLetter || codonFill)) {
+          return null
+        }
         return (
           <React.Fragment key={`${index}-${letter}`}>
             <rect
@@ -83,13 +93,7 @@ function Translation(props: {
               }
               height={height}
               stroke={renderLetter ? '#555' : 'none'}
-              fill={
-                defaultStarts.includes(codon)
-                  ? theme?.palette.startCodon
-                  : defaultStops.includes(codon)
-                    ? theme?.palette.stopCodon
-                    : theme?.palette.frames.at(frame)?.main
-              }
+              fill={codonFill || 'none'}
             />
             {renderLetter ? (
               <text
@@ -97,6 +101,7 @@ function Translation(props: {
                 y={y + height / 2}
                 dominantBaseline="middle"
                 textAnchor="middle"
+                style={{ userSelect: 'none' }}
               >
                 {letter}
               </text>
@@ -155,6 +160,7 @@ function DNA(props: {
                 fill={
                   color ? theme.palette.getContrastText(color.main) : 'black'
                 }
+                style={{ userSelect: 'none' }}
               >
                 {letter}
               </text>
@@ -173,6 +179,7 @@ function SequenceSVG({
   showReverse = true,
   showForward = true,
   showTranslation = true,
+  rowHeight = 20,
   bpPerPx,
 }: {
   regions: Region[]
@@ -181,12 +188,12 @@ function SequenceSVG({
   showReverse?: boolean
   showForward?: boolean
   showTranslation?: boolean
+  rowHeight?: number
   bpPerPx: number
 }) {
   const [region] = regions
   const theme = createJBrowseTheme(configTheme)
   const codonTable = generateCodonTable(defaultCodonTable)
-  const height = 20
   const [feature] = [...features.values()]
   if (!feature) {
     return null
@@ -199,6 +206,8 @@ function SequenceSVG({
   // incrementer for the y-position of the current sequence being rendered
   // (applies to both translation rows and dna rows)
   let currY = -20
+
+  const showDNA = bpPerPx <= 1
 
   const forwardFrames: Frame[] = showTranslation && showForward ? [3, 2, 1] : []
   const reverseFrames: Frame[] =
@@ -224,14 +233,14 @@ function SequenceSVG({
           region={region}
           seqStart={feature.get('start')}
           theme={theme}
-          height={height}
+          height={rowHeight}
           reverse={region.reversed}
         />
       ))}
 
-      {showForward ? (
+      {showForward && showDNA ? (
         <DNA
-          height={height}
+          height={rowHeight}
           y={(currY += 20)}
           feature={feature}
           region={region}
@@ -241,9 +250,9 @@ function SequenceSVG({
         />
       ) : null}
 
-      {showReverse ? (
+      {showReverse && showDNA ? (
         <DNA
-          height={height}
+          height={rowHeight}
           y={(currY += 20)}
           feature={feature}
           region={region}
@@ -264,7 +273,7 @@ function SequenceSVG({
           region={region}
           seqStart={feature.get('start')}
           theme={theme}
-          height={height}
+          height={rowHeight}
           reverse={!region.reversed}
         />
       ))}
@@ -304,14 +313,38 @@ const DivSequenceRendering = observer(function (props: {
   bpPerPx: number
   config: AnyConfigurationModel
   theme?: Theme
+  rowHeight: number
   showForward?: boolean
   showReverse?: boolean
   showTranslation?: boolean
 }) {
-  const { regions, bpPerPx } = props
+  const {
+    regions,
+    bpPerPx,
+    rowHeight,
+    showForward,
+    showReverse,
+    showTranslation,
+  } = props
   const [region] = regions
   const width = (region.end - region.start) / bpPerPx
-  const totalHeight = 200
+  let totalHeight = 0
+  if (showForward) {
+    if (bpPerPx <= 1) {
+      totalHeight += rowHeight
+    }
+    if (showTranslation && bpPerPx <= 3) {
+      totalHeight += 3 * rowHeight
+    }
+  }
+  if (showReverse) {
+    if (bpPerPx <= 1) {
+      totalHeight += rowHeight
+    }
+    if (showTranslation && bpPerPx <= 3) {
+      totalHeight += 3 * rowHeight
+    }
+  }
 
   return (
     <Wrapper {...props} totalHeight={totalHeight} width={width}>
