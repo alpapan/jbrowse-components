@@ -59,10 +59,12 @@ const ViewMenu = observer(function ({
     ...((typeof menuItems === 'function' ? menuItems() : menuItems) || []),
   ]
 
-  // note: This does not use CascadingMenuButton on purpose, because there was a confusing bug related to it!
-  // see https://github.com/GMOD/jbrowse-components/issues/4115
+  // note: This does not use CascadingMenuButton on purpose, because there was
+  // a confusing bug related to it! see
+  // https://github.com/GMOD/jbrowse-components/issues/4115
   //
-  // Make sure to test the Breakpoint split view menu checkboxes if you intend to change this
+  // Make sure to test the Breakpoint split view menu checkboxes if you
+  // intend to change this
   return (
     <>
       <IconButton

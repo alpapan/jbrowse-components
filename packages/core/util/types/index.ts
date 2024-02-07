@@ -31,6 +31,7 @@ export interface AbstractViewContainer
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extends IStateTreeNode<IType<any, unknown, any>> {
   views: AbstractViewModel[]
+  floating?: boolean
   removeView(view: AbstractViewModel): void
   addView(
     typeName: string,
@@ -280,20 +281,17 @@ export interface AbstractViewModel {
   id: string
   type: string
   width: number
+  floating: boolean
   minimized: boolean
+  displayName: string | undefined
   setWidth(width: number): void
   setMinimized(flag: boolean): void
-  displayName: string | undefined
   setDisplayName: (arg: string) => void
+  setFloating: (arg: boolean) => void
   menuItems: () => MenuItem[]
 }
-export function isViewModel(thing: unknown): thing is AbstractViewModel {
-  return (
-    typeof thing === 'object' &&
-    thing !== null &&
-    'width' in thing &&
-    'setWidth' in thing
-  )
+export function isViewModel(t: unknown): t is AbstractViewModel {
+  return typeof t === 'object' && t !== null && 'width' in t && 'setWidth' in t
 }
 
 export interface AbstractTrackModel {
@@ -301,13 +299,13 @@ export interface AbstractTrackModel {
   configuration: AnyConfigurationModel
 }
 
-export function isTrackModel(thing: unknown): thing is AbstractTrackModel {
+export function isTrackModel(t: unknown): t is AbstractTrackModel {
   return (
-    typeof thing === 'object' &&
-    thing !== null &&
-    'configuration' in thing &&
+    typeof t === 'object' &&
+    t !== null &&
+    'configuration' in t &&
     // @ts-expect-error
-    thing.configuration.trackId
+    t.configuration.trackId
   )
 }
 
@@ -318,13 +316,13 @@ export interface AbstractDisplayModel {
   rendererType: any // eslint-disable-line @typescript-eslint/no-explicit-any
   cannotBeRenderedReason?: string
 }
-export function isDisplayModel(thing: unknown): thing is AbstractDisplayModel {
+export function isDisplayModel(t: unknown): t is AbstractDisplayModel {
   return (
-    typeof thing === 'object' &&
-    thing !== null &&
-    'configuration' in thing &&
+    typeof t === 'object' &&
+    t !== null &&
+    'configuration' in t &&
     // @ts-expect-error
-    thing.configuration.displayId
+    t.configuration.displayId
   )
 }
 
@@ -362,12 +360,12 @@ export interface AppRootModel extends AbstractRootModel {
   ): BaseInternetAccountModel | undefined
 }
 
-export function isAppRootModel(thing: unknown): thing is AppRootModel {
+export function isAppRootModel(t: unknown): t is AppRootModel {
   return (
-    typeof thing === 'object' &&
-    thing !== null &&
-    'isAssemblyEditing' in thing &&
-    'findAppropriateInternetAccount' in thing
+    typeof t === 'object' &&
+    t !== null &&
+    'isAssemblyEditing' in t &&
+    'findAppropriateInternetAccount' in t
   )
 }
 
@@ -379,13 +377,13 @@ export interface RootModelWithInternetAccounts extends AbstractRootModel {
 }
 
 export function isRootModelWithInternetAccounts(
-  thing: unknown,
-): thing is RootModelWithInternetAccounts {
+  t: unknown,
+): t is RootModelWithInternetAccounts {
   return (
-    typeof thing === 'object' &&
-    thing !== null &&
-    'internetAccounts' in thing &&
-    'findAppropriateInternetAccount' in thing
+    typeof t === 'object' &&
+    t !== null &&
+    'internetAccounts' in t &&
+    'findAppropriateInternetAccount' in t
   )
 }
 
@@ -402,14 +400,12 @@ export interface AbstractMenuManager {
     position: number,
   ): number
 }
-export function isAbstractMenuManager(
-  thing: unknown,
-): thing is AbstractMenuManager {
+export function isAbstractMenuManager(t: unknown): t is AbstractMenuManager {
   return (
-    typeof thing === 'object' &&
-    thing !== null &&
-    'appendMenu' in thing &&
-    'appendToSubMenu' in thing
+    typeof t === 'object' &&
+    t !== null &&
+    'appendMenu' in t &&
+    'appendToSubMenu' in t
   )
 }
 
